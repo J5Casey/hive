@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var tile_size := 64
-@export var view_distance := 10
+@export var view_distance := 20
 
 const ResourceScene = preload("res://scenes/resource.tscn")
 
