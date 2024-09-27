@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var tile_size := 256
+@export var tile_size := 64
 @export var view_distance := 10
 
 const ResourceScene = preload("res://scenes/resource.tscn")
@@ -24,7 +24,7 @@ func _on_player_position_changed(position: Vector2) -> void:
 		for y in range(start_y, end_y + 1):
 			var tile_pos = Vector2i(x, y)
 			if $TileLayer0.get_cell_source_id(tile_pos) == -1:  # Check if the tile is not loaded
-				$TileLayer0.set_cell(Vector2i(x, y), 0, Vector2i(1,6))  # Load the tile
+				$TileLayer0.set_cell(tile_pos, 0, Vector2i(0,0))  # Load the tile
 				maybe_spawn_resource(tile_pos)
 
 func maybe_spawn_resource(tile_position: Vector2i) -> void:
