@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://doljei8gac4ay"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_rwmaq"]
+[ext_resource type="Texture2D" uid="uid://bu04eotbf0d50" path="res://assets/sprites/queen_ant/queen_ant_walk_1.png" id="2_dvted"]
+[ext_resource type="Texture2D" uid="uid://k0c4prepogw4" path="res://assets/sprites/queen_ant/queen_ant_walk_2.png" id="3_yaadi"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_r88v2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_dvted")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_yaadi")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xt2i3"]
+radius = 13.3333
+height = 46.0
+
+[node name="Player" type="CharacterBody2D"]
+scale = Vector2(3, 3)
+script = ExtResource("1_rwmaq")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_r88v2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_xt2i3")
+
+[node name="Camera2D" type="Camera2D" parent="."]
