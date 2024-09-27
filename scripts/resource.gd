@@ -14,7 +14,7 @@ var resource_textures = {
 }
 
 func _ready():
-	$CollectArea.shape.radius = 32  # Adjust this value as needed
+	$CollectArea.shape.radius = 128  # Adjust this value as needed
 	connect("area_entered", _on_area_entered)
 	connect("area_exited", _on_area_exited)
 
@@ -25,10 +25,23 @@ func _on_area_entered(area):
 func _on_area_exited(area):
 	if area.is_in_group("player"):
 		unhighlight_resource()
+	
 
 func highlight_resource():
 	# Add visual feedback when player is in range
-	$Sprite2D.modulate = Color(1.2, 1.2, 1.2)  # Slightly brighten the sprite
+	match resource_type:
+		ResourceType.WOOD:
+			$Sprite2D.modulate = Color(1.2, 1.2, 1.2)
+		ResourceType.COAL:
+			$Sprite2D.modulate = Color(10,10,10)
+		ResourceType.STONE:
+			$Sprite2D.modulate = Color(1.2, 1.2, 1.2)
+		ResourceType.IRON:
+			$Sprite2D.modulate = Color(2,2,2)
+		ResourceType.GOLD:
+			$Sprite2D.modulate = Color(1.1, 1.1, 1.1)
+		_:
+			$Sprite2D.modulate = Color(2, 2, 2) 
 
 func unhighlight_resource():
 	# Remove visual feedback
@@ -37,7 +50,6 @@ func unhighlight_resource():
 func collect_resource():
 	# This function will be called when the player decides to collect the resource
 	SignalBus.emit_signal("resource_collected", resource_type, amount)
-	queue_free()
 	
 func set_resource_type(new_type):
 	resource_type = new_type

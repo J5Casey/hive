@@ -23,6 +23,10 @@ SignalBus="*res://scripts/signal_bus.gd"
 
 project/assembly_name="HIVE"
 
+[global_group]
+
+player=""
+
 [input]
 
 move_right={
