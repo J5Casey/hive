@@ -12,20 +12,43 @@ var resource_textures = {
 	ResourceType.IRON: preload("res://assets/sprites/resources/iron.png"),
 	ResourceType.GOLD: preload("res://assets/sprites/resources/gold.png")
 }
+var resource_names = {
+	ResourceType.WOOD: "wood",
+	ResourceType.COAL: "coal",
+	ResourceType.STONE: "stone",
+	ResourceType.IRON: "iron",
+	ResourceType.GOLD: "gold"
+}
 
 func _ready():
-	$CollectArea.shape.radius = 128  # Adjust this value as needed
-	connect("area_entered", _on_area_entered)
-	connect("area_exited", _on_area_exited)
+	$CollectArea.connect("area_entered", _on_collect_area_entered)
+	$CollectArea.connect("area_exited", _on_collect_area_exited)
+	connect("mouse_entered", _on_hitbox_mouse_entered)
+	connect("mouse_exited", _on_hitbox_mouse_exited)
 
-func _on_area_entered(area):
+func _on_collect_area_entered(area):
 	if area.is_in_group("player"):
 		highlight_resource()
 
-func _on_area_exited(area):
+func _on_collect_area_exited(area):
 	if area.is_in_group("player"):
 		unhighlight_resource()
-	
+
+func _on_hitbox_mouse_entered():
+	SignalBus.emit_signal("player_hovering_resource", resource_type)
+	print("hovering over ", resource_names[resource_type])
+
+func _on_hitbox_mouse_exited():
+	SignalBus.emit_signal("player_stopped_hovering_resource")
+	print("not hovering")
+
+func _on_hitbox_area_entered(area):
+	if area.is_in_group("player"):
+		SignalBus.emit_signal("player_hovering_resource", resource_type)
+
+func _on_hitbox_area_exited(area):
+	if area.is_in_group("player"):
+		SignalBus.emit_signal("player_stopped_hovering_resource")
 
 func highlight_resource():
 	# Add visual feedback when player is in range
