@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://oqluno44svub"
-path="res://.godot/imported/0_Template_Tileset.png-83f8f713344d7e2ad4232318e0093d6f.ctex"
+uid="uid://d0f2roaljlm8g"
+path="res://.godot/imported/wood_highlight.png-3feb009c03783b28fdf94fb1a03c2bea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/Atomic Realm's Industrial Tileset - Free/5. Industrial Tileset - Free/0_Template_Tileset.png"
-dest_files=["res://.godot/imported/0_Template_Tileset.png-83f8f713344d7e2ad4232318e0093d6f.ctex"]
+source_file="res://assets/sprites/resources/wood_highlight.png"
+dest_files=["res://.godot/imported/wood_highlight.png-3feb009c03783b28fdf94fb1a03c2bea.ctex"]
 
 [params]
 

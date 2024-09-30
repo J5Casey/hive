@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ndmtauy8cnhb"
-path="res://.godot/imported/4. License.png-28573737e61d90381548136312aa5edc.ctex"
+uid="uid://cgv4hhqi3v3j3"
+path="res://.godot/imported/devTile.png-46a52c8ba97306cfefc0f01a031bb943.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/Atomic Realm's Industrial Tileset - Free/4. License.png"
-dest_files=["res://.godot/imported/4. License.png-28573737e61d90381548136312aa5edc.ctex"]
+source_file="res://assets/sprites/devTile.png"
+dest_files=["res://.godot/imported/devTile.png-46a52c8ba97306cfefc0f01a031bb943.ctex"]
 
 [params]
 

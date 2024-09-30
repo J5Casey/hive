@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bgj1dwv31fw3n"]
 
 [ext_resource type="Script" path="res://scripts/world_generator.gd" id="1_7yhe5"]
-[ext_resource type="Texture2D" uid="uid://cgv4hhqi3v3j3" path="res://assets/sprites/kenney_pattern-pack/devTile.png" id="2_rcpt7"]
+[ext_resource type="Texture2D" uid="uid://cgv4hhqi3v3j3" path="res://assets/sprites/devTile.png" id="2_rcpt7"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7s1x5"]
 texture = ExtResource("2_rcpt7")

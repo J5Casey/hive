@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3cafromgmosm"
-path="res://.godot/imported/6.png-7f76bfd23843157a05a8eea9fef7a5ef.ctex"
+uid="uid://c6mgjcmy2sirc"
+path="res://.godot/imported/coal_highlight.png-3d2c3e26134a28a629e809fdfddd5300.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/Atomic Realm's Industrial Tileset - Free/6. Character Animations - Free/Anim_Robot_Walk1_v1.1_frames/6.png"
-dest_files=["res://.godot/imported/6.png-7f76bfd23843157a05a8eea9fef7a5ef.ctex"]
+source_file="res://assets/sprites/resources/coal_highlight.png"
+dest_files=["res://.godot/imported/coal_highlight.png-3d2c3e26134a28a629e809fdfddd5300.ctex"]
 
 [params]
 

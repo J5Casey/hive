@@ -31,21 +31,33 @@ func highlight_resource():
 	# Add visual feedback when player is in range
 	match resource_type:
 		ResourceType.WOOD:
-			$Sprite2D.modulate = Color(1.2, 1.2, 1.2)
+			$Sprite2D.texture = load("res://assets/sprites/resources/wood_highlight.png")
 		ResourceType.COAL:
-			$Sprite2D.modulate = Color(10,10,10)
+			$Sprite2D.texture = load("res://assets/sprites/resources/coal_highlight.png")
 		ResourceType.STONE:
-			$Sprite2D.modulate = Color(1.2, 1.2, 1.2)
+			$Sprite2D.texture = load("res://assets/sprites/resources/stone_highlight.png")
 		ResourceType.IRON:
-			$Sprite2D.modulate = Color(2,2,2)
+			$Sprite2D.texture = load("res://assets/sprites/resources/iron_highlight.png")
 		ResourceType.GOLD:
-			$Sprite2D.modulate = Color(1.1, 1.1, 1.1)
+			$Sprite2D.texture = load("res://assets/sprites/resources/gold_highlight.png")
 		_:
 			$Sprite2D.modulate = Color(2, 2, 2) 
 
 func unhighlight_resource():
 	# Remove visual feedback
-	$Sprite2D.modulate = Color(1, 1, 1)  # Reset to normal color
+	match resource_type:
+		ResourceType.WOOD:
+			$Sprite2D.texture = load("res://assets/sprites/resources/wood.png")
+		ResourceType.COAL:
+			$Sprite2D.texture = load("res://assets/sprites/resources/coal.png")
+		ResourceType.STONE:
+			$Sprite2D.texture = load("res://assets/sprites/resources/stone.png")
+		ResourceType.IRON:
+			$Sprite2D.texture = load("res://assets/sprites/resources/iron.png")
+		ResourceType.GOLD:
+			$Sprite2D.texture = load("res://assets/sprites/resources/gold.png")
+		_:
+			$Sprite2D.modulate = Color(2, 2, 2) 
 
 func collect_resource():
 	# This function will be called when the player decides to collect the resource

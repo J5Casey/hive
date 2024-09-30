@@ -5,14 +5,11 @@ extends Node2D
 
 const ResourceScene = preload("res://scenes/resource.tscn")
 
-var player_position := Vector2.ZERO
-
 func _ready() -> void:
 	SignalBus.player_position_changed.connect(_on_player_position_changed)
 	_on_player_position_changed(Vector2(0,0))
 
-func _on_player_position_changed(position: Vector2) -> void:
-	player_position = position
+func _on_player_position_changed(player_position: Vector2 = Vector2.ZERO) -> void:
 	var player_tile_position = player_position / tile_size
 	var start_x = round(player_tile_position.x - view_distance)
 	var end_x = round(player_tile_position.x + view_distance)
@@ -28,7 +25,7 @@ func _on_player_position_changed(position: Vector2) -> void:
 				maybe_spawn_resource(tile_pos)
 
 func maybe_spawn_resource(tile_position: Vector2i) -> void:
-	if randf() < 0.05: #chance to spawn
+	if randf() < 0.005: #chance to spawn
 		var resource = ResourceScene.instantiate()
 		var resource_types = resource.ResourceType.values()
 		var random_type = resource_types[randi() % resource_types.size()]

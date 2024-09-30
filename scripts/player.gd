@@ -2,8 +2,8 @@ extends CharacterBody2D
 
 @export var speed := 400.0
 @export var run_speed_multiplier := 2
-@export var min_zoom := 0.2
-@export var max_zoom := 1.0
+@export var min_zoom := 0.5
+@export var max_zoom := 3.0
 @export var zoom_speed := 5
 
 func _ready() -> void:
