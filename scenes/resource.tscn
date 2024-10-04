@@ -14,8 +14,10 @@ radius = 128.0
 [node name="Resource" type="Area2D"]
 script = ExtResource("1_npv8l")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="BaseSprite2D" type="Sprite2D" parent="."]
 texture = SubResource("PlaceholderTexture2D_m0hc0")
+
+[node name="HighlightSprite2D" type="Sprite2D" parent="."]
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_s6vgb")

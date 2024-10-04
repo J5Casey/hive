@@ -12,6 +12,15 @@ var resource_textures = {
 	ResourceType.IRON: preload("res://assets/sprites/resources/iron.png"),
 	ResourceType.GOLD: preload("res://assets/sprites/resources/gold.png")
 }
+
+var resource_highlight_textures = {
+	ResourceType.WOOD: preload("res://assets/sprites/resources/wood_highlight.png"),
+	ResourceType.COAL: preload("res://assets/sprites/resources/coal_highlight.png"),
+	ResourceType.STONE: preload("res://assets/sprites/resources/stone_highlight.png"),
+	ResourceType.IRON: preload("res://assets/sprites/resources/iron_highlight.png"),
+	ResourceType.GOLD: preload("res://assets/sprites/resources/gold_highlight.png")
+}
+
 var resource_names = {
 	ResourceType.WOOD: "wood",
 	ResourceType.COAL: "coal",
@@ -25,6 +34,11 @@ func _ready():
 	$CollectArea.connect("area_exited", _on_collect_area_exited)
 	connect("mouse_entered", _on_hitbox_mouse_entered)
 	connect("mouse_exited", _on_hitbox_mouse_exited)
+	
+	# Set up both regular and highlight textures
+	$BaseSprite2D.texture = resource_textures[resource_type]
+	$HighlightSprite2D.texture = resource_highlight_textures[resource_type]
+	$HighlightSprite2D.visible = false
 
 func _on_collect_area_entered(area):
 	if area.is_in_group("player"):
@@ -51,36 +65,10 @@ func _on_hitbox_area_exited(area):
 		SignalBus.emit_signal("player_stopped_hovering_resource")
 
 func highlight_resource():
-	# Add visual feedback when player is in range
-	match resource_type:
-		ResourceType.WOOD:
-			$Sprite2D.texture = load("res://assets/sprites/resources/wood_highlight.png")
-		ResourceType.COAL:
-			$Sprite2D.texture = load("res://assets/sprites/resources/coal_highlight.png")
-		ResourceType.STONE:
-			$Sprite2D.texture = load("res://assets/sprites/resources/stone_highlight.png")
-		ResourceType.IRON:
-			$Sprite2D.texture = load("res://assets/sprites/resources/iron_highlight.png")
-		ResourceType.GOLD:
-			$Sprite2D.texture = load("res://assets/sprites/resources/gold_highlight.png")
-		_:
-			$Sprite2D.modulate = Color(2, 2, 2) 
+	$HighlightSprite2D.visible = true
 
 func unhighlight_resource():
-	# Remove visual feedback
-	match resource_type:
-		ResourceType.WOOD:
-			$Sprite2D.texture = load("res://assets/sprites/resources/wood.png")
-		ResourceType.COAL:
-			$Sprite2D.texture = load("res://assets/sprites/resources/coal.png")
-		ResourceType.STONE:
-			$Sprite2D.texture = load("res://assets/sprites/resources/stone.png")
-		ResourceType.IRON:
-			$Sprite2D.texture = load("res://assets/sprites/resources/iron.png")
-		ResourceType.GOLD:
-			$Sprite2D.texture = load("res://assets/sprites/resources/gold.png")
-		_:
-			$Sprite2D.modulate = Color(2, 2, 2) 
+	$HighlightSprite2D.visible = false
 
 func collect_resource():
 	# This function will be called when the player decides to collect the resource
@@ -88,4 +76,5 @@ func collect_resource():
 	
 func set_resource_type(new_type):
 	resource_type = new_type
-	$Sprite2D.texture = resource_textures[resource_type]
+	$BaseSprite2D.texture = resource_textures[resource_type]
+	$HighlightSprite2D.texture = resource_highlight_textures[resource_type]
