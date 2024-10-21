@@ -13,7 +13,7 @@ func _ready() -> void:
 	SignalBus.connect("player_hovering_resource", _on_player_hovering_resource)
 	SignalBus.connect("player_stopped_hovering_resource", _on_player_stopped_hovering_resource)
 
-func _physics_process(delta: float) -> void:
+func handle_movement(delta: float) -> void:
 	var input_vector = Vector2.ZERO
 	input_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	input_vector.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
@@ -37,11 +37,15 @@ func _physics_process(delta: float) -> void:
 		$AnimatedSprite2D.stop()
 	
 	move_and_slide()
-	handle_zoom(delta)
-	
+
+func handle_interaction() -> void:
 	if Input.is_action_just_pressed("interact") and hovering_resource_name != null:
 		SignalBus.emit_signal("resource_collected", hovering_resource_name, 1)
-		
+
+func _physics_process(delta: float) -> void:
+	handle_movement(delta)
+	handle_interaction()
+	handle_zoom(delta)		
 func handle_zoom(delta: float) -> void:
 	var zoom_direction = Input.get_action_strength("zoom_in") - Input.get_action_strength("zoom_out")
 	if zoom_direction != 0:
