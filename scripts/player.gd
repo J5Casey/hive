@@ -6,8 +6,12 @@ extends CharacterBody2D
 @export var max_zoom := 3.0
 @export var zoom_speed := 5
 
+var hovering_resource_name = null
+
 func _ready() -> void:
 	$Camera2D.zoom = Vector2(max_zoom, max_zoom)
+	SignalBus.connect("player_hovering_resource", _on_player_hovering_resource)
+	SignalBus.connect("player_stopped_hovering_resource", _on_player_stopped_hovering_resource)
 
 func _physics_process(delta: float) -> void:
 	var input_vector = Vector2.ZERO
@@ -34,7 +38,10 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	handle_zoom(delta)
-
+	
+	if Input.is_action_just_pressed("interact") and hovering_resource_name != null:
+		SignalBus.emit_signal("resource_collected", hovering_resource_name, 1)
+		
 func handle_zoom(delta: float) -> void:
 	var zoom_direction = Input.get_action_strength("zoom_in") - Input.get_action_strength("zoom_out")
 	if zoom_direction != 0:
@@ -42,3 +49,9 @@ func handle_zoom(delta: float) -> void:
 		new_zoom.x = clamp(new_zoom.x, min_zoom, max_zoom)
 		new_zoom.y = clamp(new_zoom.y, min_zoom, max_zoom)
 		$Camera2D.zoom = new_zoom
+
+func _on_player_hovering_resource(resource_name):
+	hovering_resource_name = resource_name
+
+func _on_player_stopped_hovering_resource():
+	hovering_resource_name = null

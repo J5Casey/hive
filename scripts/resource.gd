@@ -22,13 +22,12 @@ var resource_highlight_textures = {
 }
 
 var resource_names = {
-	ResourceType.WOOD: "wood",
-	ResourceType.COAL: "coal",
-	ResourceType.STONE: "stone",
-	ResourceType.IRON: "iron",
-	ResourceType.GOLD: "gold"
+	ResourceType.WOOD: "WOOD",
+	ResourceType.COAL: "COAL",
+	ResourceType.STONE: "STONE",
+	ResourceType.IRON: "IRON",
+	ResourceType.GOLD: "GOLD"
 }
-
 func _ready():
 	$CollectArea.connect("area_entered", _on_collect_area_entered)
 	$CollectArea.connect("area_exited", _on_collect_area_exited)
@@ -49,20 +48,12 @@ func _on_collect_area_exited(area):
 		unhighlight_resource()
 
 func _on_hitbox_mouse_entered():
-	SignalBus.emit_signal("player_hovering_resource", resource_type)
+	SignalBus.emit_signal("player_hovering_resource", resource_names[resource_type])
 	print("hovering over ", resource_names[resource_type])
 
 func _on_hitbox_mouse_exited():
 	SignalBus.emit_signal("player_stopped_hovering_resource")
 	print("not hovering")
-
-func _on_hitbox_area_entered(area):
-	if area.is_in_group("player"):
-		SignalBus.emit_signal("player_hovering_resource", resource_type)
-
-func _on_hitbox_area_exited(area):
-	if area.is_in_group("player"):
-		SignalBus.emit_signal("player_stopped_hovering_resource")
 
 func highlight_resource():
 	$HighlightSprite2D.visible = true
@@ -71,8 +62,7 @@ func unhighlight_resource():
 	$HighlightSprite2D.visible = false
 
 func collect_resource():
-	# This function will be called when the player decides to collect the resource
-	SignalBus.emit_signal("resource_collected", resource_type, amount)
+	SignalBus.emit_signal("resource_collected", resource_names[resource_type], amount)
 	
 func set_resource_type(new_type):
 	resource_type = new_type
