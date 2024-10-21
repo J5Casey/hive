@@ -4,6 +4,7 @@ enum ResourceType { WOOD, COAL, STONE, IRON, GOLD }
 
 @export var resource_type = ResourceType.WOOD
 @export var amount: int = 1
+var harvestable = false  # Indicates if the resource is within harvesting range
 
 var resource_textures = {
 	ResourceType.WOOD: preload("res://assets/sprites/resources/wood.png"),
@@ -28,6 +29,7 @@ var resource_names = {
 	ResourceType.IRON: "IRON",
 	ResourceType.GOLD: "GOLD"
 }
+
 func _ready():
 	$CollectArea.connect("area_entered", _on_collect_area_entered)
 	$CollectArea.connect("area_exited", _on_collect_area_exited)
@@ -48,7 +50,7 @@ func _on_collect_area_exited(area):
 		unhighlight_resource()
 
 func _on_hitbox_mouse_entered():
-	SignalBus.emit_signal("player_hovering_resource", resource_names[resource_type])
+	SignalBus.emit_signal("player_hovering_resource", self)
 	print("hovering over ", resource_names[resource_type])
 
 func _on_hitbox_mouse_exited():
@@ -57,9 +59,11 @@ func _on_hitbox_mouse_exited():
 
 func highlight_resource():
 	$HighlightSprite2D.visible = true
+	harvestable = true  # Resource is now harvestable
 
 func unhighlight_resource():
 	$HighlightSprite2D.visible = false
+	harvestable = false  # Resource is no longer harvestable
 
 func collect_resource():
 	SignalBus.emit_signal("resource_collected", resource_names[resource_type], amount)
