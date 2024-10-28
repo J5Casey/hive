@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://q5n0llvyhd67"]
+
+[ext_resource type="Script" path="res://scripts/inv_ui.gd" id="1_j1mj5"]
+[ext_resource type="Texture2D" uid="uid://cqx2oucno53ei" path="res://assets/sprites/kenney_ui-pack-space-expansion/PNG/Extra/Double/panel_glass_screws.png" id="2_ib3df"]
+
+[node name="inv_UI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_j1mj5")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(1, 1, 1, 0.737255)
+scale = Vector2(3, 3)
+texture = ExtResource("2_ib3df")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = -166.0
+offset_top = -168.0
+offset_bottom = 1.0
+scale = Vector2(2, 2)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
