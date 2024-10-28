@@ -13,6 +13,7 @@ func _ready():
 	for resource_name in resources.keys():
 		var label = Label.new()
 		label.name = resource_name
+		label.set("theme_override_colors/font_color", Color(0, 0, 0))
 		$ScrollContainer/VBoxContainer.add_child(label)
 		resource_labels[resource_name] = label
 
