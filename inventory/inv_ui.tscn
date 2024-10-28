@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://cmg1fh8cmtl5l"]
+
+[ext_resource type="Script" path="res://inventory/inv_ui.gd" id="1_t6jaq"]
+[ext_resource type="Texture2D" uid="uid://bo41ldf32e146" path="res://assets/sprites/kenney_ui-pack-space-expansion/PNG/Green/Double/button_square_header_small_square_screws.png" id="2_t4d6t"]
+[ext_resource type="PackedScene" uid="uid://csuylhwfkx6gv" path="res://inventory/inv_ui_slot.tscn" id="3_r8gxy"]
+
+[node name="Inv_UI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_t6jaq")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_t4d6t")
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="GridContainer" type="GridContainer" parent="NinePatchRect"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="inv_UI_slot" parent="NinePatchRect/GridContainer" instance=ExtResource("3_r8gxy")]
+layout_mode = 2

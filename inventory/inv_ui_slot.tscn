@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://csuylhwfkx6gv"]
+
+[ext_resource type="Texture2D" uid="uid://fdjeguq2qp58" path="res://assets/sprites/kenney_ui-pack-space-expansion/PNG/Extra/Double/panel_glass_notch_tr.png" id="1_3aon8"]
+
+[node name="inv_UI_slot" type="Panel"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(16, 16)
+offset_right = 16.0
+offset_bottom = 16.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(1, 1, 1, 0.352941)
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("1_3aon8")
+centered = false

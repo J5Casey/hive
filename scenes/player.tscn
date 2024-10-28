@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://doljei8gac4ay"]
+[gd_scene load_steps=9 format=3 uid="uid://doljei8gac4ay"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_rwmaq"]
+[ext_resource type="Resource" uid="uid://cis86sa3b4hxe" path="res://inventory/player_inv.tres" id="2_43102"]
 [ext_resource type="Texture2D" uid="uid://bu04eotbf0d50" path="res://assets/sprites/queen_ant/queen_ant_walk_1.png" id="2_dvted"]
 [ext_resource type="Texture2D" uid="uid://k0c4prepogw4" path="res://assets/sprites/queen_ant/queen_ant_walk_2.png" id="3_yaadi"]
+[ext_resource type="PackedScene" uid="uid://cmg1fh8cmtl5l" path="res://inventory/inv_ui.tscn" id="5_5xe0s"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6ctg2"]
 radius = 50.0
@@ -27,6 +29,7 @@ height = 46.0
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_rwmaq")
+inv = ExtResource("2_43102")
 metadata/_edit_group_ = true
 
 [node name="InteractArea" type="Area2D" parent="." groups=["player"]]
@@ -41,3 +44,5 @@ sprite_frames = SubResource("SpriteFrames_r88v2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_xt2i3")
+
+[node name="Inv_UI" parent="." instance=ExtResource("5_5xe0s")]

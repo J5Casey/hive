@@ -5,6 +5,7 @@ extends CharacterBody2D
 @export var min_zoom := 0.5
 @export var max_zoom := 3.0
 @export var zoom_speed := 5
+@export var inv: Inv
 
 var hovering_resource = null  # Store the resource instance
 
