@@ -19,4 +19,3 @@ func get_resource_amount(type: String) -> int:
 
 func _on_resource_collected(resource_name, amount):
 	add_resource(resource_name, amount)
-	print("Collected ", amount, " ", resource_name, ". New total: ", get_resource_amount(resource_name))

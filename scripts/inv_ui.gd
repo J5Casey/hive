@@ -24,7 +24,6 @@ func _process(delta):
 	#Toggle inventory visibility
 	if Input.is_action_just_pressed("open_inv"):
 		visible = not visible
-		print("hi")
 	
 func update_inventory_display():
 	var resources = Inventory.resources

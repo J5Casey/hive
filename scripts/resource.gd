@@ -51,11 +51,9 @@ func _on_collect_area_exited(area):
 
 func _on_hitbox_mouse_entered():
 	SignalBus.emit_signal("player_hovering_resource", self)
-	print("hovering over ", resource_names[resource_type])
 
 func _on_hitbox_mouse_exited():
 	SignalBus.emit_signal("player_stopped_hovering_resource")
-	print("not hovering")
 
 func highlight_resource():
 	$HighlightSprite2D.visible = true
