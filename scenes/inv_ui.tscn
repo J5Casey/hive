@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://q5n0llvyhd67"]
+[gd_scene load_steps=2 format=3 uid="uid://q5n0llvyhd67"]
 
 [ext_resource type="Script" path="res://scripts/inv_ui.gd" id="1_j1mj5"]
-[ext_resource type="Texture2D" uid="uid://dy6ufgaxad5k1" path="res://assets/sprites/kenney_ui-pack-space-expansion/PNG/Extra/Double/panel_glass.png" id="2_h38in"]
 
 [node name="inv_UI" type="Control"]
 layout_mode = 3
@@ -10,27 +9,28 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_j1mj5")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-self_modulate = Color(1, 1, 1, 0.941176)
-scale = Vector2(3, 3)
-texture = ExtResource("2_h38in")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="InventoryPanel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = -166.0
-offset_top = -168.0
-offset_right = 166.0
-offset_bottom = 168.0
+offset_left = -300.0
+offset_top = -200.0
+offset_bottom = 200.0
 
-[node name="Categories" type="VBoxContainer" parent="HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="TabContainer" type="TabContainer" parent="InventoryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="CraftingPanel" type="Panel" parent="HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
+[node name="CraftingPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 50.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/CraftingPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CraftingPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
