@@ -41,6 +41,8 @@ func setup_crafting_panel():
 		progress.max_value = 1.0
 		progress.value = 0
 		progress.show_percentage = false
+		progress.custom_minimum_size = Vector2(0, 10)
+		progress.modulate = Color(0.2, 0.8, 0.2)
 		container.add_child(progress)
 		
 		$CraftingPanel/VBoxContainer.add_child(container)
