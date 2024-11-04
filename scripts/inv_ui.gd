@@ -1,33 +1,72 @@
 extends Control
 
-var resource_labels = {}
+var item_labels = {}
+var recipe_buttons = {}
 
 func _ready():
-	#Off by default
 	visible = false
+	setup_category_displays()
+	setup_crafting_panel()
+	var recipe_buttons = {}
+
+func setup_crafting_panel():
+	for recipe_name in Crafting.recipes:
+		var button = Button.new()
+		button.text = recipe_name
+		button.name = recipe_name
+		button.pressed.connect(_on_recipe_pressed.bind(recipe_name))
+		$HBoxContainer/CraftingPanel/VBoxContainer.add_child(button)
+		recipe_buttons[recipe_name] = button
 	
-	# Access the resources dictionary from the Inventory singleton
-	var resources = Inventory.resources
+	# Update crafting buttons state in process
+	update_recipe_buttons()
 
-	# Dynamically create labels for each resource
-	for resource_name in resources.keys():
-		var label = Label.new()
-		label.name = resource_name
-		label.set("theme_override_colors/font_color", Color(0, 0, 0))
-		$ScrollContainer/VBoxContainer.add_child(label)
-		resource_labels[resource_name] = label
+func update_recipe_buttons():
+	for recipe_name in recipe_buttons:
+		var button = recipe_buttons[recipe_name]
+		button.disabled = not Crafting.can_craft(recipe_name)
+		
+		# Show recipe requirements on hover
+		var requirements_text = "\nRequires:"
+		for category in Crafting.recipes[recipe_name]:
+			if category == "output_category":
+				continue
+			for resource in Crafting.recipes[recipe_name][category]:
+				var amount = Crafting.recipes[recipe_name][category][resource]
+				requirements_text += "\n%s: %d" % [resource, amount]
+		button.tooltip_text = requirements_text
 
+func _on_recipe_pressed(recipe_name: String):
+	print("Button pressed for: ", recipe_name)
+	Crafting.craft_item(recipe_name)
 
-func _process(delta):
+func setup_category_displays():
+	for category in Inventory.categories:
+		var category_container = VBoxContainer.new()
+		category_container.name = category
+		
+		var category_label = Label.new()
+		category_label.text = category
+		category_label.set("theme_override_colors/font_color", Color(0, 0, 0))
+		category_container.add_child(category_label)
+		
+		$HBoxContainer/Categories.add_child(category_container)
+		
+		for item_name in Inventory.categories[category]:
+			var label = Label.new()
+			label.name = item_name
+			label.set("theme_override_colors/font_color", Color(0, 0, 0))
+			category_container.add_child(label)
+			item_labels[item_name] = label
+
+func _process(_delta):
 	update_inventory_display()
-	
-	#Toggle inventory visibility
+	update_recipe_buttons()  
 	if Input.is_action_just_pressed("open_inv"):
 		visible = not visible
-	
 func update_inventory_display():
-	var resources = Inventory.resources
-	for resource_name in resources.keys():
-		var amount = resources[resource_name]
-		var label = resource_labels[resource_name]
-		label.text = "%s: %d" % [resource_name.capitalize(), amount]
+	for category in Inventory.categories:
+		for item_name in Inventory.categories[category]:
+			var amount = Inventory.get_item_amount(category, item_name)
+			if item_labels.has(item_name):
+				item_labels[item_name].text = "%s: %d" % [item_name.capitalize(), amount]

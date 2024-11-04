@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 SignalBus="*res://scripts/signal_bus.gd"
 Inventory="*res://scripts/inventory.gd"
+Crafting="*res://scripts/crafting.gd"
 
 [dotnet]
 
