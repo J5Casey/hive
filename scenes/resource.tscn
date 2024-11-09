@@ -6,7 +6,7 @@
 size = Vector2(64, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s6vgb"]
-size = Vector2(64, 64)
+size = Vector2(60, 60)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_672b0"]
 radius = 128.0
@@ -22,7 +22,7 @@ texture = SubResource("PlaceholderTexture2D_m0hc0")
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_s6vgb")
 
-[node name="CollectArea" type="Area2D" parent="."]
+[node name="CollectArea" type="Area2D" parent="." groups=["resource_areas"]]
 
 [node name="CollectAreaShape" type="CollisionShape2D" parent="CollectArea"]
 shape = SubResource("CircleShape2D_672b0")

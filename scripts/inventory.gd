@@ -1,5 +1,10 @@
 extends Node
 
+var building_scenes = {
+	"FURNACE": preload("res://scenes/structures/furnace.tscn"),
+	"FARM": preload("res://scenes/structures/farm.tscn")
+}
+
 var categories = {
 	"Resources": {
 		"WOOD": 0,
@@ -9,12 +14,14 @@ var categories = {
 		"GOLD": 0
 	},
 	"Machines": {
-		"FURNACE": 0
+		"FURNACE": 4,
+		"FARM": 4
 	},
 	"Tools": {
 		"TOOL": 0
 	}
 }
+
 
 func _ready():
 	SignalBus.connect("resource_collected", _on_resource_collected)

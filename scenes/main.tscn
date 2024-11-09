@@ -3,15 +3,14 @@
 [ext_resource type="PackedScene" uid="uid://doljei8gac4ay" path="res://scenes/player.tscn" id="1_0r5p0"]
 [ext_resource type="PackedScene" uid="uid://bgj1dwv31fw3n" path="res://scenes/world.tscn" id="2_e7j6m"]
 [ext_resource type="PackedScene" uid="uid://cu8yvjeham4qi" path="res://scenes/ui_layer.tscn" id="3_4ljay"]
-[ext_resource type="Script" path="res://scripts/building_manager.gd" id="3_ny2ow"]
+[ext_resource type="PackedScene" path="res://scenes/systems/building_system.tscn" id="3_a5nqx"]
 
 [node name="Main" type="Node"]
 
 [node name="World" parent="." instance=ExtResource("2_e7j6m")]
 
-[node name="Player" parent="." instance=ExtResource("1_0r5p0")]
+[node name="building_system" parent="." instance=ExtResource("3_a5nqx")]
 
-[node name="BuildingManager" type="Node2D" parent="."]
-script = ExtResource("3_ny2ow")
+[node name="Player" parent="." instance=ExtResource("1_0r5p0")]
 
 [node name="UI_Layer" parent="." instance=ExtResource("3_4ljay")]

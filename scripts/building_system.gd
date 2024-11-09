@@ -1,0 +1,173 @@
+extends Node2D
+
+var is_building_mode: bool = false
+var is_destroy_mode: bool = false
+var current_ghost: Node2D = null
+var grid_size: int = 64
+var hovered_building: Node2D = null
+var destroy_timer: float = 0
+const DESTROY_TIME: float = 0.25
+var destroy_mode_label: Label
+
+func _ready() -> void:
+	SignalBus.connect("building_selected_from_inventory", _on_building_selected)
+	SignalBus.connect("inventory_opened", exit_building_mode)
+	setup_destroy_mode_ui()
+
+func setup_destroy_mode_ui() -> void:
+	destroy_mode_label = Label.new()
+	destroy_mode_label.text = "DESTROY MODE"
+	destroy_mode_label.modulate = Color(1, 0, 0)
+	destroy_mode_label.visible = false
+	add_child(destroy_mode_label)
+
+func _on_building_selected(building_scene: PackedScene) -> void:
+	# Clear any existing ghost
+	if current_ghost:
+		current_ghost.queue_free()
+	
+	enter_building_mode(building_scene)
+
+func enter_building_mode(building_scene: PackedScene) -> void:
+	is_building_mode = true
+	exit_destroy_mode()
+	spawn_ghost(building_scene)
+
+func exit_building_mode() -> void:
+	is_building_mode = false
+	if current_ghost:
+		current_ghost.queue_free()
+		current_ghost = null
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("enter_destroy_mode"):
+		toggle_destroy_mode()
+		
+	if is_building_mode:
+		if event.is_action_pressed("escape_build_mode"):
+			exit_building_mode()
+			return
+			
+		if event.is_action_pressed("place_building"):
+			place_building()
+			
+	if is_destroy_mode:
+		if event.is_action_pressed("escape_build_mode"):
+			exit_destroy_mode()
+
+func spawn_ghost(building_scene: PackedScene) -> void:
+	current_ghost = building_scene.instantiate()
+	current_ghost.modulate = Color(1, 1, 1, 0.5)
+	add_child(current_ghost)
+
+func _process(delta: float) -> void:
+	if current_ghost:
+		var mouse_pos = get_global_mouse_position()
+		current_ghost.global_position = snap_to_grid(mouse_pos)
+		update_ghost_validity()
+		
+	if is_destroy_mode:
+		process_destroy_mode(delta)
+		destroy_mode_label.visible = true
+		destroy_mode_label.global_position = get_global_mouse_position() + Vector2(20, -20)
+		Input.set_custom_mouse_cursor(preload("res://assets/sprites/cursors/destroy/destroy_cursor.png"))
+	else:
+		destroy_mode_label.visible = false
+		Input.set_custom_mouse_cursor(null)
+func snap_to_grid(pos: Vector2) -> Vector2:
+	return Vector2(
+		round(pos.x / grid_size) * grid_size,
+		round(pos.y / grid_size) * grid_size
+	)
+
+func update_ghost_validity() -> bool:
+	if not current_ghost:
+		return false
+		
+	var is_valid = true
+	var overlapping_areas = current_ghost.get_overlapping_areas()
+	
+	# Check for blocking objects
+	for area in overlapping_areas:
+		# Ignore player and resource collection areas
+		if area.is_in_group("player_areas") or area.is_in_group("resource_areas"):
+			continue
+			
+		is_valid = false
+		break
+	
+	# Check inventory
+	var building_name = "FURNACE"
+	if Inventory.get_item_amount("Machines", building_name) <= 0:
+		is_valid = false
+	
+	# Update ghost color
+	current_ghost.modulate = Color(1, 1, 1, 0.5) if is_valid else Color(1, 0, 0, 0.5)
+	
+	return is_valid
+	
+func place_building() -> void:
+	if not current_ghost or not update_ghost_validity():
+		return
+	
+	var new_building = current_ghost.duplicate()
+	new_building.modulate = Color(1, 1, 1, 1)
+	add_child(new_building)
+
+	var building_name = new_building.building_name
+	Inventory.add_item("Machines", building_name, -1)
+
+	SignalBus.emit_signal("building_placed", new_building)
+
+func destroy_building(building: Node2D) -> void:
+	var building_name = building.building_name
+	Inventory.add_item("Machines", building_name, 1)
+	building.queue_free()
+
+func process_destroy_mode(delta: float) -> void:
+	var space_state = get_world_2d().direct_space_state
+	var mouse_pos = get_global_mouse_position()
+	
+	var query = PhysicsPointQueryParameters2D.new()
+	query.position = mouse_pos
+	query.collide_with_areas = true
+	
+	var result = space_state.intersect_point(query)
+	
+	if result.size() > 0:
+		var potential_building = result[0].collider
+		if potential_building.is_in_group("destroyable"):
+			if potential_building != hovered_building:
+				if hovered_building and is_instance_valid(hovered_building):
+					hovered_building.modulate = Color(1, 1, 1, 1)  # Reset previous building
+				destroy_timer = 0
+				hovered_building = potential_building
+	else:
+		if hovered_building and is_instance_valid(hovered_building):
+			hovered_building.modulate = Color(1, 1, 1, 1)  # Reset color
+		hovered_building = null
+		destroy_timer = 0
+		
+	if hovered_building and is_instance_valid(hovered_building) and Input.is_action_pressed("destroy_building"):
+		destroy_timer += delta
+		var progress = destroy_timer / DESTROY_TIME
+		hovered_building.modulate = Color(1, 1-progress, 1-progress, 1)
+		
+		if destroy_timer >= DESTROY_TIME:
+			destroy_building(hovered_building)
+			destroy_timer = 0
+
+func toggle_destroy_mode() -> void:
+	if is_building_mode:
+		exit_building_mode()
+	
+	is_destroy_mode = !is_destroy_mode
+	print("Destroy mode: ", is_destroy_mode)
+	if !is_destroy_mode:
+		hovered_building = null
+		destroy_timer = 0
+
+func exit_destroy_mode() -> void:
+	is_destroy_mode = false
+	hovered_building = null
+	destroy_timer = 0

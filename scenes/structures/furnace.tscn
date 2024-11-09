@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://dan1dwts03wjy"]
+
+[ext_resource type="Script" path="res://scripts/structures/furnace.gd" id="1_0d0o3"]
+[ext_resource type="Texture2D" uid="uid://dkdgjbnhcnjus" path="res://assets/sprites/structures/furnace/furnace.png" id="1_gmr7i"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_85yw8"]
+size = Vector2(126, 126)
+
+[node name="furnace" type="Area2D" groups=["destroyable"]]
+script = ExtResource("1_0d0o3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_85yw8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("1_gmr7i")

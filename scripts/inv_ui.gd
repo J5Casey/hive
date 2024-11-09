@@ -7,7 +7,33 @@ func _ready():
 	visible = false
 	setup_category_tabs()
 	setup_crafting_panel()
+	setup_building_buttons()
 
+func setup_building_buttons():
+	var machines_tab = $InventoryPanel/TabContainer/Machines
+	
+	for item_name in Inventory.categories["Machines"]:
+		var container = HBoxContainer.new()
+		
+		var label = Label.new()
+		label.name = item_name
+		label.set("theme_override_colors/font_color", Color(1, 1, 1))
+		container.add_child(label)
+		item_labels[item_name] = label
+		
+		var build_button = Button.new()
+		build_button.text = "Build"
+		build_button.pressed.connect(_on_build_pressed.bind(item_name))
+		container.add_child(build_button)
+		
+		machines_tab.add_child(container)
+
+func _on_build_pressed(building_name: String):
+	if Inventory.building_scenes.has(building_name):
+		var building_scene = Inventory.building_scenes[building_name]
+		SignalBus.emit_signal("building_selected_from_inventory", building_scene)
+		visible = false  
+		
 func setup_category_tabs():
 	var tab_container = $InventoryPanel/TabContainer
 	
@@ -58,6 +84,8 @@ func _process(_delta):
 	
 	if Input.is_action_just_pressed("open_inv"):
 		visible = not visible
+		if visible:
+			SignalBus.emit_signal("inventory_opened")
 		
 func update_inventory_display():
 	for category in Inventory.categories:
