@@ -59,9 +59,3 @@ func _on_player_hovering_resource(resource):
 
 func _on_player_stopped_hovering_resource():
 	hovering_resource = null
-
-func _input(event):
-	if event.is_action_pressed("place_machine"):
-		var building_manager = get_parent().get_node("BuildingManager")
-		var machine_scene = preload("res://scenes/structures/Machine.tscn")
-		building_manager.start_placing(machine_scene)
