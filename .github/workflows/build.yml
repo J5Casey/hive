@@ -5,26 +5,27 @@ on:
   pull_request: {}
 
 jobs:
-  Godot:
+  export_game:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: [linux, windows]
+    permissions: write-all
+    name: Export Game
     steps:
-      - uses: actions/checkout@v4
+      - name: checkout
+        uses: actions/checkout@v4
         with:
           lfs: true
-      - name: HIVE
-        id: build
-        uses: manleydev/build-godot-action@v1.4.1
+          
+      - name: export game
+        id: export
+        uses: firebelley/godot-export@v6.0.0
         with:
-          name: example
-          preset: ${{ matrix.platform }}
-          debugMode: "true"
-          args: "--headless"
+          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
+          relative_project_path: ./
+          archive_output: true
+          
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Client - ${{ matrix.platform }}
-          path: ${{ github.workspace }}/${{ steps.build.outputs.build }}
-
+          name: Game Builds
+          path: ${{ steps.export.outputs.archive_directory }}/*
