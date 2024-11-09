@@ -1,0 +1,31 @@
+name: Build Godot Project
+
+on:
+  push: {}
+  pull_request: {}
+
+jobs:
+  export_game:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    name: Export Game
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          
+      - name: export game
+        id: export
+        uses: firebelley/godot-export@v6.0.0
+        with:
+          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
+          relative_project_path: ./
+          archive_output: true
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Game Builds
+          path: ${{ steps.export.outputs.archive_directory }}/*

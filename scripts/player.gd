@@ -6,7 +6,7 @@ extends CharacterBody2D
 @export var max_zoom := 3.0
 @export var zoom_speed := 5
 
-var hovering_resource = null  # Store the resource instance
+var hovering_resource = null  
 
 func _ready() -> void:
 	$Camera2D.zoom = Vector2(max_zoom, max_zoom)
