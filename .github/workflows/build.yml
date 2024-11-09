@@ -21,8 +21,10 @@ jobs:
           name: example
           preset: ${{ matrix.platform }}
           debugMode: "true"
+          args: "--headless"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Client - ${{ matrix.platform }}
           path: ${{ github.workspace }}/${{ steps.build.outputs.build }}
+
