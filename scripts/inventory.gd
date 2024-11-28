@@ -18,7 +18,7 @@ var categories = {
 	"Machines": {
 		"FURNACE": 4,
 		"FARM": 4,
-		"HIVE": 1
+		"HIVE": 2
 	},
 	"Tools": {
 		"TOOL": 0

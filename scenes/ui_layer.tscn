@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://cu8yvjeham4qi"]
+[gd_scene load_steps=3 format=3 uid="uid://cu8yvjeham4qi"]
 
 [ext_resource type="PackedScene" uid="uid://q5n0llvyhd67" path="res://scenes/inv_ui.tscn" id="1_3s4ox"]
+[ext_resource type="PackedScene" uid="uid://bvovul8fwqot4" path="res://scenes/food_meter.tscn" id="1_bujbx"]
 
 [node name="UI_Layer" type="CanvasLayer"]
+
+[node name="FoodMeter" parent="." instance=ExtResource("1_bujbx")]
 
 [node name="inv_UI" parent="." instance=ExtResource("1_3s4ox")]
 offset_left = 376.0

@@ -1,0 +1,34 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvovul8fwqot4"]
+
+[ext_resource type="Script" path="res://scripts/food_meter.gd" id="1_lvx71"]
+
+[node name="FoodMeter" type="Control"]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -328.0
+offset_right = -128.0
+offset_bottom = 100.0
+grow_horizontal = 0
+script = ExtResource("1_lvx71")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(400, 146)
+layout_mode = 2
+offset_right = 200.0
+offset_bottom = 146.0
+color = Color(0.176471, 0.176471, 0.176471, 0.592157)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 142.0
+
+[node name="FoodAmount" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+
+[node name="Rate" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50

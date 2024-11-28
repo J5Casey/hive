@@ -8,6 +8,7 @@ var hovered_building: Node2D = null
 var destroy_timer: float = 0
 const DESTROY_TIME: float = 0.25
 var destroy_mode_label: Label
+var building_scene_to_place: PackedScene = null
 
 func _ready() -> void:
 	SignalBus.connect("building_selected_from_inventory", _on_building_selected)
@@ -20,17 +21,16 @@ func setup_destroy_mode_ui() -> void:
 	destroy_mode_label.modulate = Color(1, 0, 0)
 	destroy_mode_label.visible = false
 	add_child(destroy_mode_label)
-
+	
 func _on_building_selected(building_scene: PackedScene) -> void:
-	# Clear any existing ghost
 	if current_ghost:
 		current_ghost.queue_free()
-	
 	enter_building_mode(building_scene)
 
 func enter_building_mode(building_scene: PackedScene) -> void:
 	is_building_mode = true
 	exit_destroy_mode()
+	building_scene_to_place = building_scene  # Store the scene to instantiate
 	spawn_ghost(building_scene)
 
 func exit_building_mode() -> void:
@@ -38,6 +38,11 @@ func exit_building_mode() -> void:
 	if current_ghost:
 		current_ghost.queue_free()
 		current_ghost = null
+
+func spawn_ghost(building_scene: PackedScene) -> void:
+	current_ghost = building_scene.instantiate()
+	current_ghost.modulate = Color(1, 1, 1, 0.5)
+	add_child(current_ghost)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("enter_destroy_mode"):
@@ -55,11 +60,6 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("escape_build_mode"):
 			exit_destroy_mode()
 
-func spawn_ghost(building_scene: PackedScene) -> void:
-	current_ghost = building_scene.instantiate()
-	current_ghost.modulate = Color(1, 1, 1, 0.5)
-	add_child(current_ghost)
-
 func _process(delta: float) -> void:
 	if current_ghost:
 		var mouse_pos = get_global_mouse_position()
@@ -74,6 +74,7 @@ func _process(delta: float) -> void:
 	else:
 		destroy_mode_label.visible = false
 		Input.set_custom_mouse_cursor(null)
+
 func snap_to_grid(pos: Vector2) -> Vector2:
 	return Vector2(
 		round(pos.x / grid_size) * grid_size,
@@ -86,12 +87,13 @@ func update_ghost_validity() -> bool:
 		
 	var is_valid = true
 	var overlapping_areas = current_ghost.get_overlapping_areas()
+	
 	# Check for blocking objects
 	for area in overlapping_areas:
-		# Ignore player, resource collection, and influence areas
+		# Ignore player and resource collection areas
 		if area.is_in_group("player_areas") or area.is_in_group("resource_areas") or area.is_in_group("influence_areas"):
 			continue
-	
+			
 		is_valid = false
 		break
 	
@@ -108,8 +110,10 @@ func update_ghost_validity() -> bool:
 func place_building() -> void:
 	if not current_ghost or not update_ghost_validity():
 		return
-	
-	var new_building = current_ghost.duplicate()
+
+	# Instantiate a new building from the stored scene
+	var new_building = building_scene_to_place.instantiate()
+	new_building.global_position = current_ghost.global_position
 	new_building.modulate = Color(1, 1, 1, 1)
 	add_child(new_building)
 
@@ -117,6 +121,10 @@ func place_building() -> void:
 	Inventory.add_item("Machines", building_name, -1)
 
 	SignalBus.emit_signal("building_placed", new_building)
+
+	# Check if we can continue building
+	if Inventory.get_item_amount("Machines", building_name) <= 0:
+		exit_building_mode()
 
 func destroy_building(building: Node2D) -> void:
 	var building_name = building.building_name
