@@ -32,8 +32,18 @@ var recipes = {
 		},
 		"output_category": "Machines",
 		"craft_time": 5.0
+	},
+	"DRILL": {
+		"Resources": {
+			"IRON_INGOT": 3,
+			"STONE": 5
+		},
+		"output_category": "Machines",
+		"craft_time": 3.0
 	}
+
 }
+
 var currently_crafting = {}  # Store craft timers for each recipe
 
 func _process(delta):

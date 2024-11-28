@@ -3,7 +3,8 @@ extends Node
 var building_scenes = {
 	"FURNACE": preload("res://scenes/structures/furnace.tscn"),
 	"FARM": preload("res://scenes/structures/farm.tscn"),
-	"HIVE": preload("res://scenes/structures/hive.tscn")
+	"HIVE": preload("res://scenes/structures/hive.tscn"),
+	"DRILL": preload("res://scenes/structures/drill.tscn")
 }
 
 var categories = {
@@ -18,7 +19,8 @@ var categories = {
 	"Machines": {
 		"FURNACE": 4,
 		"FARM": 4,
-		"HIVE": 2
+		"HIVE": 2,
+		"DRILL": 4
 	},
 	"Tools": {
 		"TOOL": 0

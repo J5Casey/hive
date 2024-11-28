@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://4153k1f32mv1"]
+
+[ext_resource type="Script" path="res://scripts/structures/drill.gd" id="1_n1q54"]
+[ext_resource type="Texture2D" uid="uid://6otfbs7hchh1" path="res://assets/sprites/structures/drill/drill.png" id="2_c2m66"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ogii5"]
+size = Vector2(62, 62)
+
+[node name="drill" type="Area2D" groups=["destroyable", "farms"]]
+script = ExtResource("1_n1q54")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(32, 32)
+shape = SubResource("RectangleShape2D_ogii5")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(32, 32)
+texture = ExtResource("2_c2m66")

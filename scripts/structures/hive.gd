@@ -54,11 +54,10 @@ func _process(delta):
 	FoodNetwork.consume_food(base_food_consumption * delta)
 
 func _on_influence_area_entered(node: Node2D):
+	# print("Node entered influence: ", node.name, " Groups: ", node.get_groups())
 	if node.is_in_group("farms"):
-		if node not in farms_in_range:
-			farms_in_range.append(node)
-			node.set_production_active(true)
-
+		farms_in_range.append(node)
+		node.set_production_active(true)
 func _on_influence_area_exited(node: Node2D):
 	if node.is_in_group("farms"):
 		if node in farms_in_range:

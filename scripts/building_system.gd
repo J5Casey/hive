@@ -42,6 +42,7 @@ func exit_building_mode() -> void:
 func spawn_ghost(building_scene: PackedScene) -> void:
 	current_ghost = building_scene.instantiate()
 	current_ghost.modulate = Color(1, 1, 1, 0.5)
+	
 	add_child(current_ghost)
 
 func _input(event: InputEvent) -> void:
@@ -88,14 +89,20 @@ func update_ghost_validity() -> bool:
 	var is_valid = true
 	var overlapping_areas = current_ghost.get_overlapping_areas()
 	
-	# Check for blocking objects
-	for area in overlapping_areas:
-		# Ignore player and resource collection areas
-		if area.is_in_group("player_areas") or area.is_in_group("resource_areas") or area.is_in_group("influence_areas"):
-			continue
-			
-		is_valid = false
-		break
+	# Special case for drill - must be on resource
+	if current_ghost.building_name == "DRILL":
+		is_valid = false  # Start false, only true if resource found
+		for area in overlapping_areas:
+			if area.is_in_group("resources"):
+				is_valid = true
+				break
+	else:
+		# Normal building validation
+		for area in overlapping_areas:
+			if area.is_in_group("player_areas") or area.is_in_group("resource_areas") or area.is_in_group("influence_areas"):
+				continue
+			is_valid = false
+			break
 	
 	# Check inventory using the building name
 	var building_name = current_ghost.building_name
@@ -105,8 +112,7 @@ func update_ghost_validity() -> bool:
 	# Update ghost color
 	current_ghost.modulate = Color(1, 1, 1, 0.5) if is_valid else Color(1, 0, 0, 0.5)
 	
-	return is_valid
-	
+	return is_valid	
 func place_building() -> void:
 	if not current_ghost or not update_ghost_validity():
 		return
@@ -169,7 +175,6 @@ func toggle_destroy_mode() -> void:
 		exit_building_mode()
 	
 	is_destroy_mode = !is_destroy_mode
-	print("Destroy mode: ", is_destroy_mode)
 	if !is_destroy_mode:
 		hovered_building = null
 		destroy_timer = 0

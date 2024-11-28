@@ -11,7 +11,7 @@ size = Vector2(60, 60)
 [sub_resource type="CircleShape2D" id="CircleShape2D_672b0"]
 radius = 128.0
 
-[node name="Resource" type="Area2D"]
+[node name="Resource" type="Area2D" groups=["resources"]]
 script = ExtResource("1_npv8l")
 
 [node name="BaseSprite2D" type="Sprite2D" parent="."]

@@ -8,7 +8,7 @@
 [node name="FoodMeter" parent="." instance=ExtResource("1_bujbx")]
 
 [node name="inv_UI" parent="." instance=ExtResource("1_3s4ox")]
-offset_left = 376.0
-offset_top = 336.0
-offset_right = 416.0
-offset_bottom = 376.0
+offset_left = 416.0
+offset_top = 364.0
+offset_right = 456.0
+offset_bottom = 404.0
