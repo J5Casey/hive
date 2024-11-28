@@ -52,5 +52,7 @@ func get_consumption_rate() -> float:
 func _process(delta):
 	# Add food from production
 	total_food += production_rate * delta
-	# Remove food from consumption, but don't go below 0
-	total_food = max(0, total_food - consumption_rate * delta)
+	var net_change = (production_rate - consumption_rate) * delta
+	if abs(net_change) > 0.001:  # Only apply changes above threshold
+		# Remove food from consumption, but don't go below 0
+		total_food = max(0, total_food + net_change)
