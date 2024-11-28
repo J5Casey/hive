@@ -23,6 +23,15 @@ var recipes = {
 		},
 		"output_category": "Tools",
 		"craft_time": 1.0
+	},
+	"HIVE": {
+		"Resources": {
+			"IRON_INGOT": 5,
+			"STONE": 8,
+			"WOOD": 10
+		},
+		"output_category": "Machines",
+		"craft_time": 5.0
 	}
 }
 var currently_crafting = {}  # Store craft timers for each recipe

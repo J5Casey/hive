@@ -21,6 +21,7 @@ config/windows_native_icon="res://icons/icon.ico"
 SignalBus="*res://scripts/signal_bus.gd"
 Inventory="*res://scripts/inventory.gd"
 Crafting="*res://scripts/crafting.gd"
+FoodNetwork="*res://scripts/food_network.gd"
 
 [dotnet]
 

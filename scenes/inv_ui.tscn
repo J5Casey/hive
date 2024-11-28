@@ -5,15 +5,18 @@
 [node name="inv_UI" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 432.0
+offset_top = 288.0
+offset_right = 472.0
+offset_bottom = 328.0
 script = ExtResource("1_j1mj5")
 
 [node name="InventoryPanel" type="Panel" parent="."]
 layout_mode = 0
 offset_left = -300.0
 offset_top = -200.0
-offset_bottom = 200.0
+offset_right = 632.0
+offset_bottom = 992.0
 
 [node name="TabContainer" type="TabContainer" parent="InventoryPanel"]
 layout_mode = 1
@@ -25,10 +28,10 @@ grow_vertical = 2
 
 [node name="CraftingPanel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 50.0
+offset_left = 640.0
 offset_top = -200.0
-offset_right = 250.0
-offset_bottom = 200.0
+offset_right = 1144.0
+offset_bottom = 992.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CraftingPanel"]
 layout_mode = 1

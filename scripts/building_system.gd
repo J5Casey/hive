@@ -86,18 +86,17 @@ func update_ghost_validity() -> bool:
 		
 	var is_valid = true
 	var overlapping_areas = current_ghost.get_overlapping_areas()
-	
 	# Check for blocking objects
 	for area in overlapping_areas:
-		# Ignore player and resource collection areas
-		if area.is_in_group("player_areas") or area.is_in_group("resource_areas"):
+		# Ignore player, resource collection, and influence areas
+		if area.is_in_group("player_areas") or area.is_in_group("resource_areas") or area.is_in_group("influence_areas"):
 			continue
-			
+	
 		is_valid = false
 		break
 	
-	# Check inventory
-	var building_name = "FURNACE"
+	# Check inventory using the building name
+	var building_name = current_ghost.building_name
 	if Inventory.get_item_amount("Machines", building_name) <= 0:
 		is_valid = false
 	

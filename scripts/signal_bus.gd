@@ -11,3 +11,6 @@ signal building_selected_from_inventory(building_scene)
 signal building_placed(building_instance)
 
 signal inventory_opened
+
+signal food_network_updated(total_food)
+signal hive_radius_changed(position, radius)

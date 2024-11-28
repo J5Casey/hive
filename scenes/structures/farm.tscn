@@ -1,13 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://b7qskb174bm6h"]
 
-[ext_resource type="Script" path="res://scenes/structures/farm.gd" id="1_gov2e"]
+[ext_resource type="Script" path="res://scripts/structures/farm.gd" id="1_xdjks"]
 [ext_resource type="Texture2D" uid="uid://c7wi5j1vav0k2" path="res://assets/sprites/structures/farm/farm.png" id="2_rvt7w"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qacfr"]
 size = Vector2(190, 190)
 
 [node name="farm" type="Area2D" groups=["destroyable"]]
-script = ExtResource("1_gov2e")
+script = ExtResource("1_xdjks")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(96, 96)
