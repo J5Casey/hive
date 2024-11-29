@@ -48,6 +48,7 @@ offset_bottom = 458.0
 
 [node name="Label" type="Label" parent="CanvasLayer/FurnaceUI/Panel/Crafting"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "Furnace"
 
 [node name="RecipeContainer" type="VBoxContainer" parent="CanvasLayer/FurnaceUI/Panel/Crafting"]
@@ -64,6 +65,7 @@ offset_bottom = 952.0
 
 [node name="Label" type="Label" parent="CanvasLayer/FurnaceUI/Panel/Storage"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "Storage"
 
 [node name="StorageContainer" type="VBoxContainer" parent="CanvasLayer/FurnaceUI/Panel/Storage"]

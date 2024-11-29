@@ -17,12 +17,13 @@ func setup_building_buttons():
 		
 		var label = Label.new()
 		label.name = item_name
-		label.set("theme_override_colors/font_color", Color(1, 1, 1))
+		label.add_theme_font_size_override("font_size", 24)
 		container.add_child(label)
 		item_labels[item_name] = label
 		
 		var build_button = Button.new()
 		build_button.text = "Build"
+		build_button.add_theme_font_size_override("font_size", 24)
 		build_button.pressed.connect(_on_build_pressed.bind(item_name))
 		container.add_child(build_button)
 		
@@ -32,10 +33,11 @@ func _on_build_pressed(building_name: String):
 	if Inventory.building_scenes.has(building_name):
 		var building_scene = Inventory.building_scenes[building_name]
 		SignalBus.emit_signal("building_selected_from_inventory", building_scene)
-		visible = false  
+		visible = false
 		
 func setup_category_tabs():
 	var tab_container = $InventoryPanel/TabContainer
+	tab_container.add_theme_font_size_override("font_size", 32)
 	
 	for category in Inventory.categories:
 		var tab = VBoxContainer.new()
@@ -45,12 +47,18 @@ func setup_category_tabs():
 		tab.set("theme_override_constants/margin_top", 10)
 		tab_container.add_child(tab)
 		
+		var category_label = Label.new()
+		category_label.text = category + "\n_________________"
+		category_label.add_theme_font_size_override("font_size", 32)
+		tab.add_child(category_label)
+		
 		for item_name in Inventory.categories[category]:
 			var label = Label.new()
 			label.name = item_name
-			label.set("theme_override_colors/font_color", Color(1, 1, 1))
+			label.add_theme_font_size_override("font_size", 24)
 			tab.add_child(label)
-			item_labels[item_name] = label			
+			item_labels[item_name] = label
+			
 func setup_crafting_panel():
 	for recipe_name in Crafting.recipes:
 		var container = VBoxContainer.new()
@@ -59,6 +67,7 @@ func setup_crafting_panel():
 		var button = Button.new()
 		button.text = recipe_name
 		button.name = recipe_name
+		button.add_theme_font_size_override("font_size", 24)
 		button.pressed.connect(_on_recipe_pressed.bind(recipe_name))
 		container.add_child(button)
 		

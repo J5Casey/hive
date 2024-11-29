@@ -45,6 +45,7 @@ offset_bottom = 736.0
 
 [node name="Label" type="Label" parent="CanvasLayer/CrafterUI/Panel/Crafting"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "Crafter
 "
 
@@ -63,6 +64,7 @@ offset_bottom = 736.0
 
 [node name="Label" type="Label" parent="CanvasLayer/CrafterUI/Panel/Storage"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "Storage
 "
 
@@ -71,8 +73,8 @@ layout_mode = 2
 
 [node name="CloseButton" type="Button" parent="CanvasLayer/CrafterUI/Panel"]
 layout_mode = 0
-offset_left = 1104.0
-offset_right = 1144.0
+offset_left = 1896.0
+offset_right = 1936.0
 offset_bottom = 40.0
 icon = ExtResource("2_krvc4")
 
