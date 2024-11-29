@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dan1dwts03wjy"]
+[gd_scene load_steps=5 format=3 uid="uid://dan1dwts03wjy"]
 
 [ext_resource type="Script" path="res://scripts/structures/furnace.gd" id="1_0d0o3"]
 [ext_resource type="Texture2D" uid="uid://dkdgjbnhcnjus" path="res://assets/sprites/structures/furnace/furnace.png" id="1_gmr7i"]
+[ext_resource type="Texture2D" uid="uid://dyj7myh245l15" path="res://assets/sprites/cursors/destroy/destroy_cursor.png" id="3_sjjkv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_85yw8"]
 size = Vector2(126, 126)
@@ -20,18 +21,23 @@ texture = ExtResource("1_gmr7i")
 
 [node name="FurnaceUI" type="Control" parent="CanvasLayer"]
 layout_mode = 3
-anchors_preset = 0
-offset_left = 2680.0
-offset_top = 600.0
-offset_right = 2740.0
-offset_bottom = 653.0
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -26.5
+offset_bottom = 26.5
+grow_horizontal = 0
+grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="CanvasLayer/FurnaceUI"]
 layout_mode = 0
-offset_left = -1000.0
-offset_top = -496.0
-offset_right = 511.0
-offset_bottom = 458.0
+offset_left = -1460.0
+offset_top = -528.5
+offset_right = 51.0
+offset_bottom = 425.5
 
 [node name="Crafting" type="VBoxContainer" parent="CanvasLayer/FurnaceUI/Panel"]
 layout_mode = 0
@@ -65,11 +71,11 @@ layout_mode = 2
 
 [node name="CloseButton" type="Button" parent="CanvasLayer/FurnaceUI/Panel"]
 layout_mode = 0
-offset_left = 1456.0
-offset_top = 23.0
-offset_right = 1483.0
-offset_bottom = 54.0
-text = "X"
+offset_left = 1464.0
+offset_top = 1.0
+offset_right = 1504.0
+offset_bottom = 41.0
+icon = ExtResource("3_sjjkv")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

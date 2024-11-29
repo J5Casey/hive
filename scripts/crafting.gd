@@ -40,11 +40,45 @@ var recipes = {
 		},
 		"output_category": "Machines",
 		"craft_time": 3.0
+	},
+	"STORAGE_CRATE": {
+		"Resources": {
+			"WOOD": 10,
+			"STONE": 5
+		},
+		"output_category": "Machines",
+		"craft_time": 2.0
+	},
+	"COGS": {
+	"Resources": {
+		"WOOD": 2
+	},
+	"output_category": "Resources",
+	"craft_time": 1.0
+	},
+	"CIRCUITS": {
+		"Resources": {
+			"IRON": 1,
+			"GOLD": 1
+		},
+		"output_category": "Resources",
+		"craft_time": 2.0
+	},
+	"CRAFTER": {
+		"Resources": {
+			"IRON_INGOT": 4,
+			"STONE": 6,
+			"COGS": 2,
+			"CIRCUITS": 1
+		},
+		"output_category": "Machines",
+		"craft_time": 4.0
 	}
+
 
 }
 
-var currently_crafting = {}  # Store craft timers for each recipe
+var currently_crafting = {} # Store craft timers for each recipe
 
 func _process(delta):
 	for recipe in currently_crafting.keys():

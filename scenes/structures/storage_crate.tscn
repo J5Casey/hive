@@ -1,0 +1,62 @@
+[gd_scene load_steps=5 format=3 uid="uid://3xunse3kme52"]
+
+[ext_resource type="Texture2D" uid="uid://7oc6b844ck8f" path="res://assets/sprites/structures/storage_crate/storage_crate.png" id="1_5pjwm"]
+[ext_resource type="Script" path="res://scripts/structures/storage_crate.gd" id="1_jyode"]
+[ext_resource type="Texture2D" uid="uid://dyj7myh245l15" path="res://assets/sprites/cursors/destroy/destroy_cursor.png" id="3_b5pmm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f3427"]
+size = Vector2(126, 126)
+
+[node name="storage_crate" type="Area2D" groups=["destroyable"]]
+script = ExtResource("1_jyode")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_f3427")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_5pjwm")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="StorageUI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -1152.0
+offset_top = -612.0
+offset_bottom = 204.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="CanvasLayer/StorageUI"]
+layout_mode = 0
+offset_left = -8.0
+offset_right = 1152.0
+offset_bottom = 736.0
+
+[node name="Label" type="Label" parent="CanvasLayer/StorageUI/Panel"]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 68.0
+offset_bottom = 23.0
+text = "Storage
+"
+
+[node name="StorageContainer" type="VBoxContainer" parent="CanvasLayer/StorageUI/Panel"]
+layout_mode = 0
+offset_top = 96.0
+offset_right = 1160.0
+offset_bottom = 736.0
+
+[node name="CloseButton" type="Button" parent="CanvasLayer/StorageUI/Panel"]
+layout_mode = 0
+offset_left = 1104.0
+offset_right = 1144.0
+offset_bottom = 40.0
+icon = ExtResource("3_b5pmm")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

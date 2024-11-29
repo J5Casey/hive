@@ -4,7 +4,9 @@ var building_scenes = {
 	"FURNACE": preload("res://scenes/structures/furnace.tscn"),
 	"FARM": preload("res://scenes/structures/farm.tscn"),
 	"HIVE": preload("res://scenes/structures/hive.tscn"),
-	"DRILL": preload("res://scenes/structures/drill.tscn")
+	"DRILL": preload("res://scenes/structures/drill.tscn"),
+	"STORAGE_CRATE": preload("res://scenes/structures/storage_crate.tscn"),
+	"CRAFTER": preload("res://scenes/structures/crafter.tscn"),
 }
 
 var categories = {
@@ -14,14 +16,18 @@ var categories = {
 		"STONE": 0,
 		"IRON": 2,
 		"GOLD": 0,
-		"IRON_INGOT": 0
+		"IRON_INGOT": 0,
+		"COGS": 0,
+		"CIRCUITS": 0
 	},
 	"Machines": {
 		"FURNACE": 4,
 		"FARM": 4,
 		"HIVE": 2,
-		"DRILL": 4
-	},
+		"DRILL": 4,
+		"STORAGE_CRATE": 4,
+		"CRAFTER": 2
+	},	
 	"Tools": {
 		"TOOL": 0
 	}
