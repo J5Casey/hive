@@ -39,6 +39,7 @@ offset_right = 1928.0
 offset_bottom = 832.0
 
 [node name="Crafting" type="VBoxContainer" parent="CanvasLayer/CrafterUI/Panel"]
+layout_mode = 0
 offset_top = 96.0
 offset_right = 944.0
 offset_bottom = 736.0

@@ -8,7 +8,7 @@ size = Vector2(126, 126)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qeu0f"]
 
-[node name="hive" type="Area2D" groups=["destroyable"]]
+[node name="hive" type="Area2D" groups=["destroyable", "hives"]]
 script = ExtResource("1_ayihe")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

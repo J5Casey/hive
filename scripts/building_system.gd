@@ -43,6 +43,10 @@ func spawn_ghost(building_scene: PackedScene) -> void:
 	current_ghost = building_scene.instantiate()
 	current_ghost.modulate = Color(1, 1, 1, 0.5)
 	
+	if "is_ghost" in current_ghost:
+		# Set a property to identify this as a ghost
+		current_ghost.is_ghost = true
+	
 	add_child(current_ghost)
 
 func _input(event: InputEvent) -> void:
@@ -113,6 +117,7 @@ func update_ghost_validity() -> bool:
 	current_ghost.modulate = Color(1, 1, 1, 0.5) if is_valid else Color(1, 0, 0, 0.5)
 	
 	return is_valid	
+
 func place_building() -> void:
 	if not current_ghost or not update_ghost_validity():
 		return
