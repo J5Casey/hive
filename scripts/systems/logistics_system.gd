@@ -7,9 +7,11 @@ var start_building: Node = null
 var hovered_building: Node = null
 var trail_scene = preload("res://scenes/logistics/trail.tscn")
 var trail_mode_label: Label
+var custom_cursor = preload("res://assets/sprites/cursors/trail/trail_cursor.png")
 
 func _ready():
 	SignalBus.connect("inventory_opened", exit_trail_mode)
+	SignalBus.connect("destroy_mode_entered", exit_trail_mode)
 	setup_trail_mode_ui()
 
 func setup_trail_mode_ui():
@@ -21,7 +23,7 @@ func setup_trail_mode_ui():
 
 func _input(_event):
 	if Input.is_action_just_pressed("enter_trail_mode"):
-		print("Trail mode toggled")
+		#print("Trail mode toggled")
 		if !is_trail_mode:
 			enter_trail_mode()
 		else:
@@ -29,7 +31,7 @@ func _input(_event):
 	
 	elif is_trail_mode:
 		if Input.is_action_just_pressed("place_building"):
-			print("Place building pressed in trail mode")
+			#print("Place building pressed in trail mode")
 			handle_trail_click()
 		elif Input.is_action_just_pressed("escape_build_mode"):
 			exit_trail_mode()
@@ -48,16 +50,19 @@ func _process(delta):
 		update_ghost_validity()
 
 func enter_trail_mode():
+	SignalBus.emit_signal("trail_mode_entered")
 	is_trail_mode = true
 	is_placing_trail = false
 	start_building = null
-	Input.set_custom_mouse_cursor(preload("res://assets/sprites/cursors/trail/trail_cursor.png"))
+	Input.set_custom_mouse_cursor(custom_cursor)
 	trail_mode_label.visible = true
 
 func exit_trail_mode():
 	is_trail_mode = false
 	is_placing_trail = false
 	start_building = null
+	Input.set_custom_mouse_cursor(null)
+	trail_mode_label.visible = false
 	if current_ghost_trail:
 		current_ghost_trail.queue_free()
 		current_ghost_trail = null
@@ -96,20 +101,20 @@ func unhighlight_building(building: Node):
 	building.modulate = Color(1, 1, 1, 1)
 
 func handle_trail_click():
-	print("Trail click handled")
+	#print("Trail click handled")
 	if !hovered_building:
-		print("No hovered building")
+		#print("No hovered building")
 		return
 		
 	if !start_building:
-		print("Setting start building: ", hovered_building.name)
+		#print("Setting start building: ", hovered_building.name)
 		start_building = hovered_building
 		spawn_ghost_trail()
 		is_placing_trail = true
 	else:
-		print("Attempting to complete trail")
+		#print("Attempting to complete trail")
 		if validate_connection(hovered_building):
-			print("Connection validated")
+			#print("Connection validated")
 			complete_trail(hovered_building)
 
 

@@ -13,7 +13,22 @@ var building_scene_to_place: PackedScene = null
 func _ready() -> void:
 	SignalBus.connect("building_selected_from_inventory", _on_building_selected)
 	SignalBus.connect("inventory_opened", exit_building_mode)
+	SignalBus.connect("trail_mode_entered", exit_destroy_mode)
 	setup_destroy_mode_ui()
+
+func _process(delta: float) -> void:
+	if current_ghost:
+		var mouse_pos = get_global_mouse_position()
+		current_ghost.global_position = snap_to_grid(mouse_pos)
+		update_ghost_validity()
+		
+	if is_destroy_mode:
+		process_destroy_mode(delta)
+		destroy_mode_label.visible = true
+		destroy_mode_label.global_position = get_global_mouse_position() + Vector2(20, -20)
+		Input.set_custom_mouse_cursor(preload("res://assets/sprites/cursors/destroy/destroy_cursor.png"))
+	else:
+		destroy_mode_label.visible = false
 
 func setup_destroy_mode_ui() -> void:
 	destroy_mode_label = Label.new()
@@ -65,20 +80,6 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("escape_build_mode"):
 			exit_destroy_mode()
 
-func _process(delta: float) -> void:
-	if current_ghost:
-		var mouse_pos = get_global_mouse_position()
-		current_ghost.global_position = snap_to_grid(mouse_pos)
-		update_ghost_validity()
-		
-	if is_destroy_mode:
-		process_destroy_mode(delta)
-		destroy_mode_label.visible = true
-		destroy_mode_label.global_position = get_global_mouse_position() + Vector2(20, -20)
-		Input.set_custom_mouse_cursor(preload("res://assets/sprites/cursors/destroy/destroy_cursor.png"))
-	else:
-		destroy_mode_label.visible = false
-		Input.set_custom_mouse_cursor(null)
 
 func snap_to_grid(pos: Vector2) -> Vector2:
 	return Vector2(
@@ -175,16 +176,20 @@ func process_destroy_mode(delta: float) -> void:
 			destroy_building(hovered_building)
 			destroy_timer = 0
 
-func toggle_destroy_mode() -> void:
+func enter_destroy_mode() -> void:
 	if is_building_mode:
 		exit_building_mode()
-	
-	is_destroy_mode = !is_destroy_mode
-	if !is_destroy_mode:
-		hovered_building = null
-		destroy_timer = 0
+	is_destroy_mode = true
+	SignalBus.emit_signal("destroy_mode_entered")
 
 func exit_destroy_mode() -> void:
 	is_destroy_mode = false
 	hovered_building = null
 	destroy_timer = 0
+	Input.set_custom_mouse_cursor(null)
+
+func toggle_destroy_mode() -> void:
+	if is_destroy_mode:
+		exit_destroy_mode()
+	else:
+		enter_destroy_mode()

@@ -14,3 +14,6 @@ signal inventory_opened
 
 signal food_network_updated(total_food)
 signal hive_radius_changed(position, radius)
+
+signal destroy_mode_entered
+signal trail_mode_entered
