@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwgdlcsiwm4co"]
+
+[ext_resource type="Texture2D" uid="uid://chxmp83muxrgw" path="res://assets/sprites/water/water1.png" id="1_ui364"]
+[ext_resource type="Texture2D" uid="uid://b7osnu366f2s3" path="res://assets/sprites/water/water2.png" id="2_c2j17"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ckdft"]
+size = Vector2(64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1s4ea"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ui364")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_c2j17")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Puddle" type="Area2D" groups=["puddles"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ckdft")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_1s4ea")
+frame_progress = 0.576624

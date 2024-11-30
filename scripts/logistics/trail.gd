@@ -33,26 +33,26 @@ func set_endpoints(start_pos: Vector2, end_pos: Vector2):
 	setup_collision()
 
 func _ready():
-	print("Trail initialized")
+	#print("Trail initialized")
 	setup_collision()
 	width = 4.0
 	default_color = Color(0.8, 0.5, 0.2, 0.8)
 
 func set_buildings(start: Node, end: Node):
-	print("Setting buildings: ", start.name, " to ", end.name)
+	#print("Setting buildings: ", start.name, " to ", end.name)
 	start_building = start
 	end_building = end
 	start_building.tree_exiting.connect(queue_free)
 	end_building.tree_exiting.connect(queue_free)
 	is_active = true
-	print("Trail activated")
+	#print("Trail activated")
 	
 func _process(delta):
 	if is_active and start_building and end_building:
 		var food_cost = get_food_cost() * delta
-		print("Attempting to consume food: ", food_cost)
+		#print("Attempting to consume food: ", food_cost)
 		if FoodNetwork.consume_food(food_cost):
-			print("Food consumed, attempting transfer")
+			#print("Food consumed, attempting transfer")
 			transfer_timer += delta
 			if transfer_timer >= 1.0 / transfer_rate:
 				attempt_transfer()
