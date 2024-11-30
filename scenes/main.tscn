@@ -1,15 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://chcneolfx0rnh"]
+[gd_scene load_steps=6 format=3 uid="uid://chcneolfx0rnh"]
 
 [ext_resource type="PackedScene" uid="uid://doljei8gac4ay" path="res://scenes/player.tscn" id="1_0r5p0"]
 [ext_resource type="PackedScene" uid="uid://bgj1dwv31fw3n" path="res://scenes/world.tscn" id="2_e7j6m"]
 [ext_resource type="PackedScene" uid="uid://cu8yvjeham4qi" path="res://scenes/ui_layer.tscn" id="3_4ljay"]
 [ext_resource type="PackedScene" uid="uid://bgfr3ioyoewxy" path="res://scenes/systems/building_system.tscn" id="3_a5nqx"]
+[ext_resource type="PackedScene" uid="uid://bboharbe6iga7" path="res://scenes/systems/logistics_system.tscn" id="3_l87dp"]
 
 [node name="Main" type="Node"]
 
 [node name="World" parent="." instance=ExtResource("2_e7j6m")]
 
 [node name="building_system" parent="." instance=ExtResource("3_a5nqx")]
+
+[node name="logistics_system" parent="." instance=ExtResource("3_l87dp")]
 
 [node name="Player" parent="." instance=ExtResource("1_0r5p0")]
 
