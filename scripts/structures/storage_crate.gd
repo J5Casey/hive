@@ -27,6 +27,7 @@ func interact():
 		update_storage_display()
 
 func update_storage_display():
+	print("Storage crate contents: ", storage)
 	for child in storage_container.get_children():
 		child.queue_free()
 		
@@ -43,6 +44,7 @@ func update_storage_display():
 			
 			storage_container.add_child(item_label)
 			storage_container.add_child(transfer_button)
+
 
 func transfer_item(item):
 	if storage[item] > 0:
@@ -65,3 +67,8 @@ func _on_mouse_entered():
 
 func _on_mouse_exited():
 	is_mouse_hovering = false
+
+var is_within_hive_radius = false
+
+func set_production_active(active: bool):
+	is_within_hive_radius = active

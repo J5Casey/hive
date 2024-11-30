@@ -32,12 +32,17 @@ static var current_open_furnace: Area2D = null
 @onready var progress_bar = $CanvasLayer/FurnaceUI/Panel/Crafting/ProgressBar
 @onready var storage_container = $CanvasLayer/FurnaceUI/Panel/Storage/StorageContainer
 @onready var close_button = $CanvasLayer/FurnaceUI/Panel/CloseButton
+var is_within_hive_radius = false
+
+func set_production_active(active: bool):
+	is_within_hive_radius = active
+
 func _ready():
 	ui.hide()
 	setup_recipe_buttons()
 	close_button.pressed.connect(func(): ui.hide())
 	update_storage_display()
-
+	
 func interact():
 	if current_open_furnace != null and current_open_furnace != self:
 		current_open_furnace.ui.hide()
@@ -168,3 +173,6 @@ func _on_mouse_entered():
 
 func _on_mouse_exited():
 	is_mouse_hovering = false
+
+func _on_trail_button_pressed():
+	LogisticsSystem.start_trail_placement(self)

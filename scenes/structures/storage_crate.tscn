@@ -7,7 +7,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f3427"]
 size = Vector2(126, 126)
 
-[node name="storage_crate" type="Area2D" groups=["destroyable"]]
+[node name="storage_crate" type="Area2D" groups=["destroyable", "farms", "logistics"]]
 script = ExtResource("1_jyode")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -37,7 +37,7 @@ offset_left = -8.0
 offset_right = 1152.0
 offset_bottom = 736.0
 
-[node name="Label" type="Label" parent="CanvasLayer/StorageUI/Panel"]
+[node name="Label" type="Label" parent="CanvasLayer/StorageUI/Panel" groups=["logistics"]]
 layout_mode = 0
 offset_left = 8.0
 offset_right = 68.0

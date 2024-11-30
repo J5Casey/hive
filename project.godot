@@ -22,6 +22,7 @@ SignalBus="*res://scripts/signal_bus.gd"
 Inventory="*res://scripts/inventory.gd"
 Crafting="*res://scripts/crafting.gd"
 FoodNetwork="*res://scripts/food_network.gd"
+LogisticsSystem="*res://scripts/logistics_system.gd"
 
 [dotnet]
 
@@ -32,6 +33,7 @@ project/assembly_name="HIVE"
 player=""
 destroyable=""
 farms=""
+logistics=""
 
 [input]
 
@@ -92,6 +94,7 @@ place_building={
 escape_build_mode={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":2,"position":Vector2(215, 42),"global_position":Vector2(234, 133),"factor":1.0,"button_index":2,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
 enter_destroy_mode={
@@ -102,6 +105,11 @@ enter_destroy_mode={
 destroy_building={
 "deadzone": 0.5,
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(357, 21),"global_position":Vector2(376, 112),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+enter_trail_mode={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":84,"key_label":0,"unicode":116,"location":0,"echo":false,"script":null)
 ]
 }
 

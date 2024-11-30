@@ -7,7 +7,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_85yw8"]
 size = Vector2(126, 126)
 
-[node name="furnace" type="Area2D" groups=["destroyable"]]
+[node name="furnace" type="Area2D" groups=["destroyable", "farms", "logistics"]]
 script = ExtResource("1_0d0o3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -60,7 +60,7 @@ layout_mode = 2
 [node name="Storage" type="VBoxContainer" parent="CanvasLayer/FurnaceUI/Panel"]
 layout_mode = 0
 offset_left = 265.0
-offset_right = 1504.0
+offset_right = 1352.0
 offset_bottom = 952.0
 
 [node name="Label" type="Label" parent="CanvasLayer/FurnaceUI/Panel/Storage"]

@@ -24,7 +24,7 @@ func check_for_resource():
 			current_resource = area
 			var resource_name = area.resource_names[area.resource_type]
 			storage[resource_name] = 0
-			print("Drill found resource: ", resource_name)
+			#print("Drill found resource: ", resource_name)
 			break
 
 func _process(delta):
