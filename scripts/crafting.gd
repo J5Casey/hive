@@ -73,9 +73,15 @@ var recipes = {
 		},
 		"output_category": "Machines",
 		"craft_time": 4.0
+	},
+	"LANDFILL": {
+		"Resources": {
+			"WOOD": 5,
+			"REFINED_STONE": 3
+		},
+		"output_category": "Machines",
+		"craft_time": 2.0
 	}
-
-
 }
 
 var currently_crafting = {} # Store craft timers for each recipe

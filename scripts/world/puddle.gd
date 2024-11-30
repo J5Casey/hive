@@ -1,4 +1,4 @@
-extends StaticBody2D
+extends Area2D
 
 func _ready():
 	set_process(true)  # Enable processing

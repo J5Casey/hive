@@ -12,6 +12,16 @@ var recipes = {
 			"IRON_INGOT": 2
 		},
 		"craft_time": 3.0
+	},
+	"REFINED_STONE (x2)": {
+		"inputs": {
+			"STONE": 2,
+			"COAL": 1
+		},
+		"outputs": {
+			"REFINED_STONE": 2
+		},
+		"craft_time": 2.0
 	}
 }
 

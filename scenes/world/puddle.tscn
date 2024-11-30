@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://b7osnu366f2s3" path="res://assets/sprites/water/water2.png" id="2_c2j17"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ckdft"]
-size = Vector2(64, 64)
+size = Vector2(62, 62)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1s4ea"]
 animations = [{
@@ -21,10 +21,15 @@ animations = [{
 "speed": 2.0
 }]
 
-[node name="Puddle" type="StaticBody2D" groups=["puddles"]]
+[node name="Puddle" type="Area2D" groups=["puddles"]]
 script = ExtResource("1_th3ew")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ckdft")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("RectangleShape2D_ckdft")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

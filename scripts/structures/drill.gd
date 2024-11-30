@@ -13,7 +13,7 @@ var is_within_hive_radius = false
 func _ready():
 	add_to_group("destroyable")
 	add_child(amount_label)
-	amount_label.position = Vector2(32, -20)  
+	amount_label.position = Vector2(-5, -15)  
 	amount_label.add_theme_font_size_override("font_size", 16)
 	modulate = Color(1, 0.5, 0.5, 1)  # Start red-tinted
 
@@ -32,7 +32,7 @@ func _process(delta):
 		if FoodNetwork.get_total_food() > 0:  # Only collect if we have food
 			var resource_name = current_resource.resource_names[current_resource.resource_type]
 			output_storage[resource_name] += collection_rate * delta
-			amount_label.text = "%s: %.1f" % [resource_name, output_storage[resource_name]]
+			amount_label.text = "%.0f" % [output_storage[resource_name]]
 	else:
 		call_deferred("check_for_resource")
 

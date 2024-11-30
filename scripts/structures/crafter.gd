@@ -84,6 +84,16 @@ var recipes = {
 			"CIRCUITS": 1
 		},
 		"craft_time": 2.0
+	},
+	"LANDFILL": {
+		"inputs": {
+			"WOOD": 5,
+			"REFINED_STONE": 3
+		},
+		"outputs": {
+			"LANDFILL": 1
+		},
+		"craft_time": 2.0
 	}
 }
 

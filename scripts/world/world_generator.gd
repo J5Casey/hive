@@ -11,6 +11,7 @@ const PuddleScene = preload("res://scenes/world/puddle.tscn")
 
 func _ready() -> void:
 	SignalBus.player_position_changed.connect(_on_player_position_changed)
+	SignalBus.connect("request_puddle_removal", _on_request_puddle_removal)
 	
 	# Configure FastNoiseLite parameters
 	noise.seed = randi()  # Random seed for different patterns
@@ -22,6 +23,17 @@ func _ready() -> void:
 	noise.fractal_gain = 0.7  # Amplitude of each octave; affects smoothness
 	
 	_on_player_position_changed(Vector2.ZERO)  # Generate initial tiles
+
+func _on_request_puddle_removal(position: Vector2):
+	var tile_position = $TileLayer0.local_to_map(position)
+	remove_puddle_at_position(tile_position)
+
+func remove_puddle_at_position(tile_position: Vector2i):
+	if puddle_positions.has(tile_position):
+		var puddle = puddle_positions[tile_position]
+		if is_instance_valid(puddle):
+			puddle.queue_free()
+		puddle_positions.erase(tile_position)
 
 func _on_player_position_changed(player_position: Vector2 = Vector2.ZERO) -> void:
 	var player_tile_position = player_position / tile_size

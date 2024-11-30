@@ -17,11 +17,10 @@ func _ready() -> void:
 	setup_destroy_mode_ui()
 
 func _process(delta: float) -> void:
-	if current_ghost:
+	if is_instance_valid(current_ghost):
 		var mouse_pos = get_global_mouse_position()
 		current_ghost.global_position = snap_to_grid(mouse_pos)
-		update_ghost_validity()
-		
+		update_ghost_validity()		
 	if is_destroy_mode:
 		process_destroy_mode(delta)
 		destroy_mode_label.visible = true
@@ -38,7 +37,7 @@ func setup_destroy_mode_ui() -> void:
 	add_child(destroy_mode_label)
 	
 func _on_building_selected(building_scene: PackedScene) -> void:
-	if current_ghost:
+	if is_instance_valid(current_ghost):
 		current_ghost.queue_free()
 	enter_building_mode(building_scene)
 
@@ -50,7 +49,7 @@ func enter_building_mode(building_scene: PackedScene) -> void:
 
 func exit_building_mode() -> void:
 	is_building_mode = false
-	if current_ghost:
+	if is_instance_valid(current_ghost):
 		current_ghost.queue_free()
 		current_ghost = null
 
@@ -82,11 +81,16 @@ func _input(event: InputEvent) -> void:
 
 
 func snap_to_grid(pos: Vector2) -> Vector2:
-	return Vector2(
+	var snapped = Vector2(
 		round(pos.x / grid_size) * grid_size,
 		round(pos.y / grid_size) * grid_size
 	)
-
+	
+	# Apply offset only for 1x1 buildings
+	if current_ghost and (current_ghost.building_name == "DRILL" or current_ghost.building_name == "LANDFILL"):
+		snapped += Vector2(grid_size/2, grid_size/2)
+		
+	return snapped
 func update_ghost_validity() -> bool:
 	if not current_ghost:
 		return false
@@ -94,8 +98,15 @@ func update_ghost_validity() -> bool:
 	var is_valid = true
 	var overlapping_areas = current_ghost.get_overlapping_areas()
 	
+	# Special case for landfill - must be on puddle
+	if current_ghost.building_name == "LANDFILL":
+		is_valid = false  # Start false, only true if puddle found
+		for area in overlapping_areas:
+			if area.is_in_group("puddles"):
+				is_valid = true
+				break
 	# Special case for drill - must be on resource
-	if current_ghost.building_name == "DRILL":
+	elif current_ghost.building_name == "DRILL":
 		is_valid = false  # Start false, only true if resource found
 		for area in overlapping_areas:
 			if area.is_in_group("resources"):
