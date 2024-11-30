@@ -59,18 +59,20 @@ func _process(delta):
 				transfer_timer = 0.0
 				
 func attempt_transfer():
-	for item in start_building.storage:
-		if start_building.storage[item] > 1:
-			if !end_building.storage.has(item):
-				end_building.storage[item] = 0
-			end_building.storage[item] += 1
-			start_building.storage[item] -= 1
+	var source_storage = start_building.output_storage if "output_storage" in start_building else start_building.storage
+	var target_storage = end_building.input_storage if "input_storage" in end_building else end_building.storage	
+	for item in source_storage:
+		if source_storage[item] > 0:
+			if !target_storage.has(item):
+				target_storage[item] = 0
+			target_storage[item] += 1
+			source_storage[item] -= 1
 			if start_building.has_method("update_storage_display"):
 				start_building.update_storage_display()
 			if end_building.has_method("update_storage_display"):
 				end_building.update_storage_display()
-			break
-
+			break			
+			
 func get_food_cost() -> float:
 	var distance = start_point.position.distance_to(end_point.position)
 	return distance * food_cost_multiplier * transfer_rate 

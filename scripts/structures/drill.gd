@@ -2,8 +2,8 @@ extends Area2D
 
 @export var building_name = "DRILL"
 @export var food_consumption_rate = 0.2  # Food per second
+@export var output_storage = {}  # rename current 'output_storage' to 'output_output_storage'
 
-var storage = {}
 var current_resource = null
 var collection_rate = 1.0  # Resources per second
 var is_within_hive_radius = false
@@ -23,7 +23,7 @@ func check_for_resource():
 		if area.is_in_group("resources"):
 			current_resource = area
 			var resource_name = area.resource_names[area.resource_type]
-			storage[resource_name] = 0
+			output_storage[resource_name] = 0
 			#print("Drill found resource: ", resource_name)
 			break
 
@@ -31,8 +31,8 @@ func _process(delta):
 	if current_resource and is_instance_valid(current_resource) and is_within_hive_radius:
 		if FoodNetwork.get_total_food() > 0:  # Only collect if we have food
 			var resource_name = current_resource.resource_names[current_resource.resource_type]
-			storage[resource_name] += collection_rate * delta
-			amount_label.text = "%s: %.1f" % [resource_name, storage[resource_name]]
+			output_storage[resource_name] += collection_rate * delta
+			amount_label.text = "%s: %.1f" % [resource_name, output_storage[resource_name]]
 	else:
 		call_deferred("check_for_resource")
 

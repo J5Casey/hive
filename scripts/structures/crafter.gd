@@ -2,6 +2,8 @@ extends Area2D
 
 @export var building_name = "CRAFTER"
 @export var food_consumption_rate = 0.3  # Food per second
+@export var input_storage = {}
+@export var output_storage = {}
 
 var recipes = {
 	"FURNACE": {
@@ -85,8 +87,7 @@ var recipes = {
 	}
 }
 
-var storage = {}
-var current_recipe = null
+var active_recipe = null
 var crafting_progress = 0.0
 var is_crafting = false
 var is_mouse_hovering = false
@@ -107,12 +108,28 @@ func _ready():
 	setup_recipe_buttons()  
 	update_storage_display()
 
+func _process(delta):
+	update_recipe_buttons()
+
+	if active_recipe and is_within_hive_radius:
+		if FoodNetwork.consume_food(food_consumption_rate * delta):
+			if !is_crafting and try_consume_ingredients():
+				is_crafting = true
+				crafting_progress = 0.0
+		
+			if is_crafting:
+				crafting_progress += delta
+				progress_bar.value = (crafting_progress / active_recipe.craft_time) * 100
+				if crafting_progress >= active_recipe.craft_time:
+					complete_crafting()
+
+
 func setup_recipe_buttons():
 	for recipe_name in recipes:
 		var recipe_button = Button.new()
 		recipe_button.text = recipe_name
 		recipe_button.add_theme_font_size_override("font_size", 24)
-		
+	
 		var tooltip = "Requires:\n"
 		for item in recipes[recipe_name].inputs:
 			tooltip += "- %s x%d\n" % [item, recipes[recipe_name].inputs[item]]
@@ -120,7 +137,7 @@ func setup_recipe_buttons():
 		for item in recipes[recipe_name].outputs:
 			tooltip += "- %s x%d\n" % [item, recipes[recipe_name].outputs[item]]
 		recipe_button.tooltip_text = tooltip
-		
+	
 		recipe_button.pressed.connect(
 			func(): start_crafting(recipe_name)
 		)
@@ -128,79 +145,90 @@ func setup_recipe_buttons():
 
 func update_recipe_buttons():
 	for button in recipe_container.get_children():
-		var recipe = recipes[button.text]
-		var can_craft = true
-		for item in recipe.inputs:
-			if !storage.has(item) or storage[item] < recipe.inputs[item]:
-				can_craft = false
-				break
-		button.disabled = !can_craft or !is_within_hive_radius
+		button.disabled = !is_within_hive_radius
 
 func update_storage_display():
 	for child in storage_container.get_children():
 		child.queue_free()
+	
+	# Display input storage
+	var input_label = Label.new()
+	input_label.text = "Input Storage:"
+	input_label.add_theme_font_size_override("font_size", 24)
+	storage_container.add_child(input_label)
+	
+	for item in input_storage:
+		var item_container = HBoxContainer.new()
 		
-	for item in storage:
-		if storage[item] > 0:
+		var item_label = Label.new()
+		item_label.text = "%s: %d" % [item, input_storage[item]]
+		item_label.add_theme_font_size_override("font_size", 24)
+		
+		var transfer_button = Button.new()
+		transfer_button.text = "Transfer From Inventory"
+		transfer_button.add_theme_font_size_override("font_size", 24)
+		transfer_button.pressed.connect(func(): transfer_from_inventory(item))
+		
+		item_container.add_child(item_label)
+		item_container.add_child(transfer_button)
+		storage_container.add_child(item_container)
+	
+	# Display output storage
+	var output_label = Label.new()
+	output_label.text = "Output Storage:"
+	output_label.add_theme_font_size_override("font_size", 24)
+	storage_container.add_child(output_label)
+	
+	for item in output_storage:
+		if output_storage[item] > 0:
+			var item_container = HBoxContainer.new()
+			
 			var item_label = Label.new()
-			item_label.text = "%s: %d" % [item, storage[item]]
+			item_label.text = "%s: %d" % [item, output_storage[item]]
 			item_label.add_theme_font_size_override("font_size", 24)
 			
 			var transfer_button = Button.new()
-			transfer_button.text = "Transfer"
+			transfer_button.text = "Transfer To Inventory"
 			transfer_button.add_theme_font_size_override("font_size", 24)
 			transfer_button.pressed.connect(func(): transfer_item(item))
 			
-			storage_container.add_child(item_label)
-			storage_container.add_child(transfer_button)
+			item_container.add_child(item_label)
+			item_container.add_child(transfer_button)
+			storage_container.add_child(item_container)
 
 func transfer_item(item):
-	if storage[item] > 0:
+	if input_storage[item] > 0:
 		for category in Inventory.categories:
 			if Inventory.categories[category].has(item):
 				Inventory.add_item(category, item, 1)
-				storage[item] -= 1
+				input_storage[item] -= 1
 				update_storage_display()
 				update_recipe_buttons()
 				break
 
 func complete_crafting():
-	for item in current_recipe.outputs:
-		if !storage.has(item):
-			storage[item] = 0
-		storage[item] += current_recipe.outputs[item]
+	for item in active_recipe.outputs:
+		if !output_storage.has(item):
+			output_storage[item] = 0
+		output_storage[item] += active_recipe.outputs[item]
 	is_crafting = false
-	current_recipe = null
 	progress_bar.value = 0
 	update_storage_display()
 	update_recipe_buttons()
 
 func start_crafting(recipe_name):
-	if recipes.has(recipe_name) and is_within_hive_radius:
-		current_recipe = recipes[recipe_name]
-		if try_consume_ingredients():
-			is_crafting = true
-			crafting_progress = 0.0
+	active_recipe = recipes[recipe_name]
 
 func try_consume_ingredients():
-	for item in current_recipe.inputs:
-		if !storage.has(item) or storage[item] < current_recipe.inputs[item]:
+	for item in active_recipe.inputs:
+		if !input_storage.has(item) or input_storage[item] < active_recipe.inputs[item]:
 			return false
 
-	for item in current_recipe.inputs:
-		storage[item] -= current_recipe.inputs[item]
-	
-	update_storage_display()
-	update_recipe_buttons()
-	return true
-
-func _process(delta):
-	if is_crafting and current_recipe and is_within_hive_radius:
-		if FoodNetwork.get_total_food() > 0:
-			crafting_progress += delta
-			progress_bar.value = (crafting_progress / current_recipe.craft_time) * 100
-			if crafting_progress >= current_recipe.craft_time:
-				complete_crafting()
+	for item in active_recipe.inputs:
+		input_storage[item] -= active_recipe.inputs[item]
+		update_storage_display()
+		update_recipe_buttons()
+		return true
 
 func set_production_active(active: bool):
 	is_within_hive_radius = active
@@ -238,3 +266,15 @@ func _on_mouse_entered():
 
 func _on_mouse_exited():
 	is_mouse_hovering = false
+
+func transfer_from_inventory(item):
+	for category in Inventory.categories:
+		if Inventory.categories[category].has(item):
+			if Inventory.get_item_amount(category, item) > 0:
+				if !input_storage.has(item):
+					input_storage[item] = 0
+				input_storage[item] += 1
+				Inventory.add_item(category, item, -1)
+				update_storage_display()
+				update_recipe_buttons()
+				break

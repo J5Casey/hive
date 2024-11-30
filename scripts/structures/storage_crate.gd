@@ -1,8 +1,8 @@
 extends Area2D
 
 @export var building_name = "STORAGE_CRATE"
+@export var storage = {}
 
-var storage = {}
 var is_mouse_hovering = false
 
 static var current_open_storage: Area2D = null
