@@ -24,11 +24,13 @@ shape = SubResource("RectangleShape2D_usoh7")
 
 [node name="DetectionArea" type="Area2D" parent="."]
 collision_layer = 2
+input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
 shape = SubResource("CircleShape2D_q2qjk")
 
 [node name="AttackArea" type="Area2D" parent="."]
+input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
 shape = SubResource("CircleShape2D_pfa1m")

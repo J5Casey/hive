@@ -4,7 +4,9 @@ extends CharacterBody2D
 @export var detection_radius := 400.0
 @export var attack_damage := 10
 @export var attack_cooldown := 1.0
+@export var max_health := 50  # Added maximum health for the enemy
 
+var health := max_health  # Current health of the enemy
 var target = null
 var can_attack := true
 var entities_in_range = []
@@ -76,6 +78,14 @@ func attack(target_node):
 
 func _on_attack_timer_timeout():
 	can_attack = true
+
+func take_damage(amount):
+	health -= amount
+	if health <= 0:
+		die()
+
+func die():
+	queue_free()
 
 func _on_player_died():
 	if target and target.is_in_group("player"):

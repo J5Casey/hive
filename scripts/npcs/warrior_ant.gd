@@ -7,19 +7,23 @@ extends Area2D
 @export var attack_cooldown := 1.0
 @export var food_consumption_rate := 0.2  # Food per second
 @export var is_ghost := false
+@export var max_health := 100  # Maximum health
+@export var health_regen_rate := 2.0  # Health regenerated per second
 
+var health := max_health
 var target = null
 var can_attack := true
 var entities_in_range = []
 var hive_position = null
 var hive_radius = 0.0
-var is_within_hive_radius = false  # Tracks if the ant is within a hive's influence
+var is_within_hive_radius = false  # Tracks if the ant is within the hive's influence
+var is_active = true  # Tracks if the ant is active due to food availability
+var velocity = Vector2.ZERO
 
 var patrol_target = null
 var patrol_change_interval = 2.0  # Change target every 2 seconds
 var patrol_timer = 0.0
 
-@onready var character_body = $CharacterBody2D
 @onready var attack_timer = $AttackTimer
 @onready var collision_shape = $CollisionShape2D
 @onready var detection_area = $DetectionArea
@@ -27,90 +31,139 @@ var patrol_timer = 0.0
 
 func _ready():
 	if is_ghost:
-		# Disable collisions and interactions during placement
 		collision_shape.disabled = true
-		detection_area.set_monitorable(false)
-		attack_area.set_monitorable(false)
+		detection_area.monitorable = false
+		detection_area.monitoring = false
+		attack_area.monitorable = false
+		attack_area.monitoring = false
 		return  # Skip further initialization
 
-	# Enable collisions and interactions
 	collision_shape.disabled = false
-	detection_area.set_monitorable(true)
-	attack_area.set_monitorable(true)
+	detection_area.monitorable = true
+	detection_area.monitoring = true
+	attack_area.monitorable = true
+	attack_area.monitoring = true
 
 	attack_timer.wait_time = attack_cooldown
 
-	# Connect signals
-	detection_area.body_entered.connect(_on_detection_area_body_entered)
-	detection_area.body_exited.connect(_on_detection_area_body_exited)
-	attack_area.body_entered.connect(_on_attack_area_body_entered)
-	attack_area.body_exited.connect(_on_attack_area_body_exited)
-	attack_timer.timeout.connect(_on_attack_timer_timeout)
-
-	modulate = Color(1, 0.5, 0.5, 1)  # Start with a red tint to indicate inactive
+	modulate = Color(1, 1, 1, 1)  # Start with normal color indicating active
 
 func _physics_process(delta):
-	if is_ghost or not is_within_hive_radius:
-		character_body.velocity = Vector2.ZERO
+	if is_ghost or not is_within_hive_radius or not is_active:
+		velocity = Vector2.ZERO
 		return
 
 	var direction = Vector2.ZERO
-	
+
 	if target and is_instance_valid(target):
-		direction = (target.global_position - global_position).normalized()
+		# Only act on the target if it's within hive influence radius
+		if hive_position and target.global_position.distance_to(hive_position) <= hive_radius:
+			# Move towards the enemy target
+			direction = (target.global_position - global_position).normalized()
+		else:
+			# Target is outside hive radius; do not move towards it
+			pass
 	else:
 		if hive_position and global_position.distance_to(hive_position) > hive_radius:
+			# Return to hive if ant is outside hive radius
 			direction = (hive_position - global_position).normalized()
 		else:
+			# Patrol within hive radius
 			patrol_timer += delta
-			if patrol_timer >= patrol_change_interval or patrol_target == null:
+			if patrol_timer >= patrol_change_interval or patrol_target == null \
+					or global_position.distance_to(patrol_target) < 5:
 				patrol_timer = 0.0
 				patrol_target = get_random_position_within_hive()
-			if patrol_target:
-				direction = (patrol_target - global_position).normalized()
+			direction = (patrol_target - global_position).normalized()
 
-	character_body.velocity = direction * speed
-	character_body.move_and_slide()
-	
+	if direction != Vector2.ZERO:
+		velocity = direction * speed
+		position += velocity * delta
+	else:
+		velocity = Vector2.ZERO
+
+	# Handle attacking
+	if can_attack and entities_in_range.size() > 0:
+		var attack_target = entities_in_range[0]
+		# Only attack if target is within hive radius
+		if hive_position and attack_target.global_position.distance_to(hive_position) <= hive_radius:
+			attack(attack_target)
+		else:
+			# Do not attack target outside hive radius
+			pass
+
 func _process(delta):
 	if is_ghost or not is_within_hive_radius:
-		return  # No actions while in ghost mode or inactive
+		return  # No actions while outside hive radius
 
-	# Consume food over time
-	if FoodNetwork.consume_food(food_consumption_rate * delta):
-		# Food successfully consumed
-		pass
+	if is_active:
+		# Try to consume food
+		if FoodNetwork.consume_food(food_consumption_rate * delta):
+			pass  # Food successfully consumed
+		else:
+			# Not enough food, deactivate ant
+			deactivate()
 	else:
-		# Not enough food, perhaps handle starvation logic here
-		pass
+		# If inactive due to lack of food, check if food is available to reactivate
+		if FoodNetwork.consume_food(food_consumption_rate * delta):
+			activate()
+
+	# Health regeneration
+	if health < max_health:
+		health += health_regen_rate * delta
+		health = min(health, max_health)  # Ensure health doesn't exceed max
+
+func activate():
+	if not is_active:
+		is_active = true
+		modulate = Color(1, 1, 1, 1)  # Normal color indicating active
+		# Re-register as consumer
+		FoodNetwork.register_consumer(self, food_consumption_rate)
+		# Re-enable monitoring
+		detection_area.monitoring = true
+		attack_area.monitoring = true
+		# Process overlapping bodies in detection area
+		for body in detection_area.get_overlapping_bodies():
+			_on_detection_area_body_entered(body)
+		for body in attack_area.get_overlapping_bodies():
+			_on_attack_area_body_entered(body)
+
+func deactivate():
+	if is_active:
+		is_active = false
+		modulate = Color(1, 0.5, 0.5, 1)  # Red tint indicating inactive
+		# Unregister as consumer
+		FoodNetwork.unregister_consumer(self)
+		# Disable monitoring to save resources
+		detection_area.monitoring = false
+		attack_area.monitoring = false
+		target = null
+		velocity = Vector2.ZERO
+		patrol_target = null
+		entities_in_range.clear()  # Clear entities in range
 
 func set_production_active(active: bool):
 	is_within_hive_radius = active
-	if active:
-		# Register with FoodNetwork
-		FoodNetwork.register_consumer(self, food_consumption_rate)
-		modulate = Color(1, 1, 1, 1)  # Normal color to indicate active
+	if not is_within_hive_radius:
+		# If ant leaves hive influence, deactivate
+		deactivate()
 	else:
-		# Unregister from FoodNetwork
-		FoodNetwork.unregister_consumer(self)
-		modulate = Color(1, 0.5, 0.5, 1)  # Red tint to indicate inactive
-		target = null
-		character_body.velocity = Vector2.ZERO
-		patrol_target = null  # Reset patrol target
+		# If ant enters hive influence and food is available, attempt to activate
+		if not is_active and FoodNetwork.consume_food(0):
+			activate()
 
-func set_hive_data(position, radius: float):
+func set_hive_data(position, radius):
 	hive_position = position
 	hive_radius = radius
 
 func get_random_position_within_hive() -> Vector2:
-	# Generate a random angle and distance within the hive's influence radius
 	var angle = randf() * TAU  # Random angle between 0 and 2π
 	var distance = randf_range(0, hive_radius)
 	var offset = Vector2(cos(angle), sin(angle)) * distance
 	return hive_position + offset
 
 func _on_detection_area_body_entered(body):
-	if not is_within_hive_radius:
+	if not is_active:
 		return
 	if body.is_in_group("enemies"):
 		target = body
@@ -120,7 +173,7 @@ func _on_detection_area_body_exited(body):
 		target = null
 
 func _on_attack_area_body_entered(body):
-	if not is_within_hive_radius:
+	if not is_active:
 		return
 	if body.is_in_group("enemies"):
 		entities_in_range.append(body)
@@ -130,7 +183,8 @@ func _on_attack_area_body_exited(body):
 		entities_in_range.erase(body)
 
 func attack(target_node):
-	if target_node and is_instance_valid(target_node) and target_node.has_method("take_damage"):
+	if target_node and is_instance_valid(target_node) \
+			and target_node.has_method("take_damage"):
 		target_node.take_damage(attack_damage)
 	can_attack = false
 	attack_timer.start()
@@ -138,6 +192,18 @@ func attack(target_node):
 func _on_attack_timer_timeout():
 	can_attack = true
 
+func take_damage(amount):
+	health -= amount
+	if health <= 0:
+		die()
+
+func die():
+	# Unregister from FoodNetwork if still active
+	if is_active:
+		FoodNetwork.unregister_consumer(self)
+	queue_free()
+
 func _exit_tree():
-	if is_within_hive_radius:
+	# Ensure we unregister from FoodNetwork if the ant is removed
+	if is_active:
 		FoodNetwork.unregister_consumer(self)

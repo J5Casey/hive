@@ -30,6 +30,7 @@ script = ExtResource("1_rwmaq")
 metadata/_edit_group_ = true
 
 [node name="InteractArea" type="Area2D" parent="." groups=["player", "player_areas"]]
+input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" groups=["player_areas"]]
 shape = SubResource("CircleShape2D_6ctg2")
@@ -43,6 +44,7 @@ sprite_frames = SubResource("SpriteFrames_r88v2")
 shape = SubResource("CapsuleShape2D_xt2i3")
 
 [node name="Area2D" type="Area2D" parent="."]
+input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CapsuleShape2D_xt2i3")
