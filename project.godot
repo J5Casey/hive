@@ -35,6 +35,8 @@ destroyable=""
 farms=""
 logistics=""
 huntable=""
+enemies=""
+influence_areas=""
 
 [input]
 

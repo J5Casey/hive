@@ -81,7 +81,15 @@ var recipes = {
 		},
 		"output_category": "Machines",
 		"craft_time": 2.0
-	}
+	},
+	    "WARRIOR_ANT": {
+        "Resources": {
+            "IRON_INGOT": 2,
+            "WOOD": 5
+        },
+        "output_category": "Machines",
+        "craft_time": 3.0
+    },
 }
 
 var currently_crafting = {} # Store craft timers for each recipe

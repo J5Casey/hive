@@ -8,7 +8,7 @@ var noise = FastNoiseLite.new()  # Initialize FastNoiseLite instance
 
 const ResourceScene = preload("res://scenes/world/resource.tscn")
 const PuddleScene = preload("res://scenes/world/puddle.tscn")
-const EnemyScene = preload("res://scenes/enemies/enemy.tscn")
+const EnemyScene = preload("res://scenes/npcs/enemy.tscn")
 
 func _ready() -> void:
 	SignalBus.player_position_changed.connect(_on_player_position_changed)
@@ -26,7 +26,7 @@ func _ready() -> void:
 	_on_player_position_changed(Vector2.ZERO)  # Generate initial tiles
 
 func _on_request_puddle_removal(position: Vector2):
-	var tile_position = $TileLayer0.local_to_map(position)
+	var tile_position = $TileLayer1.local_to_map(position)
 	remove_puddle_at_position(tile_position)
 
 func remove_puddle_at_position(tile_position: Vector2i):
@@ -47,8 +47,8 @@ func _on_player_position_changed(player_position: Vector2 = Vector2.ZERO) -> voi
 	for x in range(start_x, end_x + 1):
 		for y in range(start_y, end_y + 1):
 			var tile_pos = Vector2i(x, y)
-			if $TileLayer0.get_cell_source_id(tile_pos) == -1:  # Check if the tile is not loaded
-				$TileLayer0.set_cell(tile_pos, 0, Vector2i(0, 0))  # Load the tile
+			if $TileLayer1.get_cell_source_id(tile_pos) == -1:  # Check if the tile is not loaded
+				$TileLayer1.set_cell(tile_pos, 0, Vector2i(0, 0))  # Load the tile
 				var noise_value = noise.get_noise_2d(float(x), float(y))
 				# Check distance from spawn
 				var distance_from_spawn = Vector2(tile_pos).length()
@@ -59,7 +59,7 @@ func _on_player_position_changed(player_position: Vector2 = Vector2.ZERO) -> voi
 					maybe_spawn_resource(tile_pos)
 				# Spawn enemies with low probability
 				if randf() < 0.001 and distance_from_spawn > 30:  
-					var spawn_position = $TileLayer0.map_to_local(tile_pos)
+					var spawn_position = $TileLayer1.map_to_local(tile_pos)
 					if not is_puddle_at_position(tile_pos):
 						spawn_enemy(spawn_position)
 
@@ -75,12 +75,12 @@ func maybe_spawn_resource(tile_position: Vector2i) -> void:
 		var resource_types = resource.ResourceType.values()
 		var random_type = resource_types[randi() % resource_types.size()]
 		resource.set_resource_type(random_type)
-		resource.position = $TileLayer0.map_to_local(tile_position)
+		resource.position = $TileLayer1.map_to_local(tile_position)
 		$ResourceLayer.add_child(resource)
 
 func spawn_puddle(tile_position: Vector2i) -> void:
 	var puddle = PuddleScene.instantiate()
-	puddle.position = $TileLayer0.map_to_local(tile_position)
+	puddle.position = $TileLayer1.map_to_local(tile_position)
 	add_child(puddle)
 	puddle_positions[tile_position] = puddle  # Keep track of puddle positions
 

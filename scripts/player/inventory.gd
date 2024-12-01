@@ -8,6 +8,7 @@ var building_scenes = {
 	"STORAGE_CRATE": preload("res://scenes/structures/storage_crate.tscn"),
 	"CRAFTER": preload("res://scenes/structures/crafter.tscn"),
 	"LANDFILL": preload("res://scenes/structures/landfill.tscn"),
+	"WARRIOR_ANT": preload("res://scenes/npcs/warrior_ant.tscn"),  
 }
 
 var categories = {
@@ -30,6 +31,7 @@ var categories = {
 		"STORAGE_CRATE": 4,
 		"CRAFTER": 2,
 		"LANDFILL": 8,
+		"WARRIOR_ANT": 4, 
 	},	
 	"Tools": {
 		"TOOL": 0
@@ -38,7 +40,8 @@ var categories = {
 
 func _ready():
 	SignalBus.connect("resource_collected", _on_resource_collected)
-	reset_inventory()
+	# Toggle below comment for cheaty items for quick debugging
+	# reset_inventory()
 
 func add_item(category: String, item_name: String, amount: int):
 	if categories.has(category) and categories[category].has(item_name):

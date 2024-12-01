@@ -10,6 +10,7 @@ extends Area2D
 @onready var influence_detector = $InfluenceArea
 
 var farms_in_range = []
+var warrior_ants_in_range = []
 var influence_radius = tile_radius * 64  
 var is_mouse_hovering = false
 
@@ -63,6 +64,7 @@ func _detect_existing_farms():
 			if farm not in farms_in_range:
 				farms_in_range.append(farm)
 				farm.set_production_active(true)
+				
 func _exit_tree():
 	if self.has_meta("is_ghost") and is_ghost:
 		# Skip cleanup for the ghost hive
@@ -82,6 +84,11 @@ func _on_influence_area_entered(node: Node2D):
 	if node.is_in_group("farms"):
 		farms_in_range.append(node)
 		node.set_production_active(true)
+	elif node.is_in_group("warrior"):
+		#print("Warrior ant entered hive influence area:", node.name)
+		warrior_ants_in_range.append(node)
+		node.set_production_active(true)
+		node.set_hive_data(global_position, influence_radius)
 
 func _on_influence_area_exited(node: Node2D):
 	if is_ghost:
@@ -91,6 +98,12 @@ func _on_influence_area_exited(node: Node2D):
 		if node in farms_in_range:
 			farms_in_range.erase(node)
 			node.set_production_active(false)
+	elif node.is_in_group("warrior"):
+		if node in warrior_ants_in_range:
+			#print("Warrior ant exited hive influence area:", node.name)
+			warrior_ants_in_range.erase(node)
+			node.set_production_active(false)
+			node.set_hive_data(null, 0)  
 
 func _on_mouse_entered():
 	is_mouse_hovering = true

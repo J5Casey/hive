@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://1j12hciumtxh"]
 
-[ext_resource type="Script" path="res://scripts/enemies/enemy.gd" id="1_txsoy"]
+[ext_resource type="Script" path="res://scripts/npcs/enemy.gd" id="1_txsoy"]
 [ext_resource type="Texture2D" uid="uid://ydb3hu2tlu58" path="res://assets/sprites/enemies/enemy/enemy.png" id="2_1tjcq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_usoh7"]
@@ -12,7 +12,8 @@ radius = 400.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_pfa1m"]
 radius = 50.0
 
-[node name="enemy" type="CharacterBody2D"]
+[node name="enemy" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 5
 script = ExtResource("1_txsoy")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -9,26 +9,48 @@ var target = null
 var can_attack := true
 var entities_in_range = []
 
+var wander_target = null
+var wander_timer = 0.0
+var wander_interval = 3.0  
+
 func _ready():
 	$DetectionArea/CollisionShape2D.shape.radius = detection_radius
 	$AttackTimer.wait_time = attack_cooldown
 
-	# Connect to 'player_died' signal via SignalBus
 	SignalBus.connect("player_died", _on_player_died)
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	if target and is_instance_valid(target):
 		var direction = global_position.direction_to(target.global_position)
 		velocity = direction * speed
 		move_and_slide()
-
-		# Attack logic
+		
 		if can_attack and entities_in_range.size() > 0:
 			attack(entities_in_range[0])
 	else:
-		# No target, stop moving
-		velocity = Vector2.ZERO
-		move_and_slide()
+		# Wandering behavior
+		wander_timer += delta
+		if wander_timer >= wander_interval:
+			wander_timer = 0
+			# 70% chance to pick new wander target, 30% chance to stop
+			if randf() < 0.7:
+				var angle = randf() * TAU  
+				var distance = randf_range(50, 200)  
+				wander_target = global_position + Vector2(cos(angle), sin(angle)) * distance
+			else:
+				wander_target = null
+				
+		if wander_target:
+			var direction = global_position.direction_to(wander_target)
+			velocity = direction * (speed * 0.5)  # Move at half speed while wandering
+			move_and_slide()
+			
+			# If close to wander target, clear it
+			if global_position.distance_to(wander_target) < 10:
+				wander_target = null
+		else:
+			velocity = Vector2.ZERO
+			move_and_slide()
 
 func _on_detection_area_body_entered(body):
 	if body.is_in_group("huntable") and target == null:

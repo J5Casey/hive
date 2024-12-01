@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=3 uid="uid://bx7dg7e0ssk86"]
+
+[ext_resource type="Script" path="res://scripts/npcs/warrior_ant.gd" id="1_kpwma"]
+[ext_resource type="Texture2D" uid="uid://bnvfj8oedom4v" path="res://assets/sprites/enemies/warrior_ant/warrior_ant_walk_1.png" id="1_nlnqp"]
+[ext_resource type="Texture2D" uid="uid://cfdbk7y7ahf6b" path="res://assets/sprites/enemies/warrior_ant/warrior_ant_walk_2.png" id="2_i2c7q"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_n0jln"]
+radius = 17.0
+height = 60.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2xw3q"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_nlnqp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_i2c7q")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tewr2"]
+radius = 2000.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_crax1"]
+radius = 50.0
+
+[node name="warrior_ant" type="Area2D" groups=["influence_areas", "warrior"]]
+script = ExtResource("1_kpwma")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("CapsuleShape2D_n0jln")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+position = Vector2(0, -5)
+shape = SubResource("CapsuleShape2D_n0jln")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D"]
+sprite_frames = SubResource("SpriteFrames_2xw3q")
+
+[node name="DetectionArea" type="Area2D" parent="." groups=["influence_areas"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CircleShape2D_tewr2")
+
+[node name="AttackArea" type="Area2D" parent="." groups=["influence_areas"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource("CircleShape2D_crax1")
+
+[node name="AttackTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="body_entered" from="AttackArea" to="." method="_on_attack_area_body_entered"]
+[connection signal="body_exited" from="AttackArea" to="." method="_on_attack_area_body_exited"]
+[connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]

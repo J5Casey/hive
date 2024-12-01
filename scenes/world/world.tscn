@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bgj1dwv31fw3n"]
+[gd_scene load_steps=9 format=3 uid="uid://bgj1dwv31fw3n"]
 
 [ext_resource type="Script" path="res://scripts/world/world_generator.gd" id="1_7yhe5"]
 [ext_resource type="Texture2D" uid="uid://cgv4hhqi3v3j3" path="res://assets/sprites/devTile.png" id="2_rcpt7"]
+[ext_resource type="Texture2D" uid="uid://bfk2y26gpyb54" path="res://assets/sprites/tiles/grass/Grass.png" id="3_otxo2"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7s1x5"]
 texture = ExtResource("2_rcpt7")
@@ -12,6 +13,15 @@ texture_region_size = Vector2i(64, 64)
 tile_size = Vector2i(64, 64)
 sources/0 = SubResource("TileSetAtlasSource_7s1x5")
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pfo20"]
+texture = ExtResource("3_otxo2")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_fnpyc"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_pfo20")
+
 [sub_resource type="TileSet" id="TileSet_uorjy"]
 tile_size = Vector2i(64, 64)
 
@@ -20,6 +30,9 @@ script = ExtResource("1_7yhe5")
 
 [node name="TileLayer0" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_5f6vr")
+
+[node name="TileLayer1" type="TileMapLayer" parent="."]
+tile_set = SubResource("TileSet_fnpyc")
 
 [node name="ResourceLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_uorjy")
