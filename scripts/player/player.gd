@@ -64,12 +64,14 @@ func _on_player_stopped_hovering_resource():
 
 func take_damage(amount: int) -> void:
 	health -= amount
-	print("ouch")
+	SignalBus.health_changed.emit(health)
+	# print("ouch")
 	if health <= 0:
 		# Handle player death
 		# print("ded")
 		SignalBus.player_died.emit()
 		health = 100  # Reset health
+		SignalBus.health_changed.emit(health)
 		position = Vector2.ZERO  # Reset to spawn
 		Inventory.reset_inventory()  # Clear inventory
 

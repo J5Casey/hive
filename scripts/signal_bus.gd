@@ -21,3 +21,6 @@ signal trail_mode_entered
 signal request_puddle_removal(position) 
 
 signal player_died 
+
+
+signal health_changed(new_health)
