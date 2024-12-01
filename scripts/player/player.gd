@@ -8,6 +8,7 @@ extends CharacterBody2D
 @export var health := 100
 
 var hovering_resource = null  
+var is_harvesting: bool = false
 
 func _ready() -> void:
 	$Camera2D.zoom = Vector2(max_zoom, max_zoom)
@@ -39,13 +40,28 @@ func handle_movement(delta: float) -> void:
 	
 	move_and_slide()
 
-func handle_interaction() -> void:
-	if Input.is_action_just_pressed("interact") and hovering_resource != null and hovering_resource.harvestable:
-		hovering_resource.collect_resource()
+func handle_interaction(delta: float) -> void:
+	if hovering_resource != null and hovering_resource.harvestable:
+		if Input.is_action_pressed("interact"):
+			if not is_harvesting:
+				# Start harvesting on the resource
+				hovering_resource.start_harvesting()
+				is_harvesting = true
+		else:
+			if is_harvesting:
+				# Stop harvesting on the resource
+				hovering_resource.cancel_harvesting()
+				is_harvesting = false
+	else:
+		if is_harvesting:
+			# Stop harvesting if not hovering over a resource anymore
+			if hovering_resource != null:
+				hovering_resource.cancel_harvesting()
+			is_harvesting = false
 
 func _physics_process(delta: float) -> void:
 	handle_movement(delta)
-	handle_interaction()
+	handle_interaction(delta)
 	handle_zoom(delta)
 	
 func handle_zoom(delta: float) -> void:
@@ -60,15 +76,17 @@ func _on_player_hovering_resource(resource):
 	hovering_resource = resource  # Store the resource node
 
 func _on_player_stopped_hovering_resource():
+	if is_harvesting:
+		if hovering_resource != null:
+			hovering_resource.cancel_harvesting()
+		is_harvesting = false
 	hovering_resource = null
 
 func take_damage(amount: int) -> void:
 	health -= amount
 	SignalBus.health_changed.emit(health)
-	# print("ouch")
 	if health <= 0:
 		# Handle player death
-		# print("ded")
 		SignalBus.player_died.emit()
 		health = 100  # Reset health
 		SignalBus.health_changed.emit(health)

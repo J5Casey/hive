@@ -26,3 +26,12 @@ shape = SubResource("RectangleShape2D_s6vgb")
 
 [node name="CollectAreaShape" type="CollisionShape2D" parent="CollectArea"]
 shape = SubResource("CircleShape2D_672b0")
+
+[node name="HarvestUI" type="CanvasLayer" parent="."]
+
+[node name="HarvestProgressBar" type="ProgressBar" parent="HarvestUI"]
+visible = false
+custom_minimum_size = Vector2(100, 10)
+offset_right = 4.0
+offset_bottom = 27.0
+max_value = 2.0
