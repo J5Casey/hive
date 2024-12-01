@@ -19,9 +19,9 @@ config/windows_native_icon="res://icons/icon.ico"
 [autoload]
 
 SignalBus="*res://scripts/signal_bus.gd"
-Inventory="*res://scripts/inventory.gd"
-Crafting="*res://scripts/crafting.gd"
-FoodNetwork="*res://scripts/food_network.gd"
+Inventory="*res://scripts/player/inventory.gd"
+Crafting="*res://scripts/player/crafting.gd"
+FoodNetwork="*res://scripts/logistics/food_network.gd"
 LogisticsSystem="*res://scripts/systems/logistics_system.gd"
 
 [dotnet]

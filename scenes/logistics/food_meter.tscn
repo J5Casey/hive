@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bvovul8fwqot4"]
 
-[ext_resource type="Script" path="res://scripts/food_meter.gd" id="1_lvx71"]
+[ext_resource type="Script" path="res://scripts/logistics/food_meter.gd" id="1_lvx71"]
 
 [node name="FoodMeter" type="Control"]
 layout_mode = 3
