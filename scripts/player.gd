@@ -5,13 +5,14 @@ extends CharacterBody2D
 @export var min_zoom := 0.5
 @export var max_zoom := 3.0
 @export var zoom_speed := 5
+@export var health := 100
 
 var hovering_resource = null  
 
 func _ready() -> void:
 	$Camera2D.zoom = Vector2(max_zoom, max_zoom)
-	SignalBus.connect("player_hovering_resource", _on_player_hovering_resource)
-	SignalBus.connect("player_stopped_hovering_resource", _on_player_stopped_hovering_resource)
+	SignalBus.player_hovering_resource.connect(_on_player_hovering_resource)
+	SignalBus.player_stopped_hovering_resource.connect(_on_player_stopped_hovering_resource)
 
 func handle_movement(delta: float) -> void:
 	var input_vector = Vector2.ZERO
@@ -30,7 +31,7 @@ func handle_movement(delta: float) -> void:
 		SignalBus.player_position_changed.emit(global_position)
 		
 		# Rotate the player based on movement direction
-		var rotation_angle = velocity.angle() + PI/2
+		var rotation_angle = velocity.angle() + PI / 2
 		rotation = rotation_angle
 	else:
 		velocity = Vector2.ZERO
@@ -46,6 +47,7 @@ func _physics_process(delta: float) -> void:
 	handle_movement(delta)
 	handle_interaction()
 	handle_zoom(delta)
+	
 func handle_zoom(delta: float) -> void:
 	var zoom_direction = Input.get_action_strength("zoom_in") - Input.get_action_strength("zoom_out")
 	if zoom_direction != 0:
@@ -59,3 +61,42 @@ func _on_player_hovering_resource(resource):
 
 func _on_player_stopped_hovering_resource():
 	hovering_resource = null
+
+func take_damage(amount: int) -> void:
+	health -= amount
+	print("ouch")
+	if health <= 0:
+		# Handle player death
+		# print("ded")
+		SignalBus.player_died.emit()
+		health = 100  # Reset health
+		position = Vector2.ZERO  # Reset to spawn
+		Inventory.reset_inventory()  # Clear inventory
+
+		# Temporarily remove from 'huntable' group
+		remove_from_group("huntable")
+
+		# Re-add after a short delay
+		var readd_timer = Timer.new()
+		readd_timer.one_shot = true
+		readd_timer.wait_time = 1.0  # Adjust delay as needed
+		add_child(readd_timer)
+		readd_timer.timeout.connect(_on_readd_to_huntable)
+		readd_timer.start()
+
+		# Disable collision shapes temporarily
+		$CollisionShape2D.disabled = true
+
+		# Re-enable collisions after a short delay
+		var collision_timer = Timer.new()
+		collision_timer.one_shot = true
+		collision_timer.wait_time = 0.1  # Adjust delay as needed
+		add_child(collision_timer)
+		collision_timer.timeout.connect(_on_reenable_collision)
+		collision_timer.start()
+
+func _on_readd_to_huntable():
+	add_to_group("huntable")
+
+func _on_reenable_collision():
+	$CollisionShape2D.disabled = false

@@ -7,7 +7,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f3427"]
 size = Vector2(126, 126)
 
-[node name="storage_crate" type="Area2D" groups=["destroyable", "farms", "logistics"]]
+[node name="storage_crate" type="Area2D" groups=["destroyable", "farms", "huntable", "logistics"]]
 script = ExtResource("1_jyode")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

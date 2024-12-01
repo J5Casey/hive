@@ -23,3 +23,5 @@ tile_set = SubResource("TileSet_5f6vr")
 
 [node name="ResourceLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_uorjy")
+
+[node name="EnemyLayer" type="TileMapLayer" parent="."]

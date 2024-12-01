@@ -19,3 +19,5 @@ signal destroy_mode_entered
 signal trail_mode_entered
 
 signal request_puddle_removal(position) 
+
+signal player_died 

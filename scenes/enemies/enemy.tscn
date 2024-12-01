@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://1j12hciumtxh"]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy.gd" id="1_txsoy"]
+[ext_resource type="Texture2D" uid="uid://ydb3hu2tlu58" path="res://assets/sprites/enemies/enemy/enemy.png" id="2_1tjcq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_usoh7"]
+size = Vector2(64, 64)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_q2qjk"]
+radius = 400.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pfa1m"]
+radius = 50.0
+
+[node name="enemy" type="CharacterBody2D"]
+script = ExtResource("1_txsoy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_1tjcq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_usoh7")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CircleShape2D_q2qjk")
+
+[node name="AttackArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource("CircleShape2D_pfa1m")
+
+[node name="AttackTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="body_entered" from="AttackArea" to="." method="_on_attack_area_body_entered"]
+[connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]

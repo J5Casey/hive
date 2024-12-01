@@ -38,6 +38,7 @@ var categories = {
 
 func _ready():
 	SignalBus.connect("resource_collected", _on_resource_collected)
+	reset_inventory()
 
 func add_item(category: String, item_name: String, amount: int):
 	if categories.has(category) and categories[category].has(item_name):
@@ -50,3 +51,8 @@ func get_item_amount(category: String, item_name: String) -> int:
 
 func _on_resource_collected(resource_name, amount):
 	add_item("Resources", resource_name, amount)
+
+func reset_inventory():
+	for category in categories:
+		for item in categories[category]:
+			categories[category][item] = 0

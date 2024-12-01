@@ -8,6 +8,7 @@ var noise = FastNoiseLite.new()  # Initialize FastNoiseLite instance
 
 const ResourceScene = preload("res://scenes/world/resource.tscn")
 const PuddleScene = preload("res://scenes/world/puddle.tscn")
+const EnemyScene = preload("res://scenes/enemies/enemy.tscn")
 
 func _ready() -> void:
 	SignalBus.player_position_changed.connect(_on_player_position_changed)
@@ -16,7 +17,7 @@ func _ready() -> void:
 	# Configure FastNoiseLite parameters
 	noise.seed = randi()  # Random seed for different patterns
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN  # Noise type
-	noise.frequency = 0.01  # Controls the scale; smaller values create larger features
+	noise.frequency = 0.005  # Controls the scale; smaller values create larger features
 	noise.fractal_type = FastNoiseLite.FRACTAL_FBM  # Set fractal type for detail
 	noise.fractal_octaves = 2 # Number of noise layers; more octaves add detail
 	noise.fractal_lacunarity = 2.0  # Frequency multiplier between octaves
@@ -51,11 +52,21 @@ func _on_player_position_changed(player_position: Vector2 = Vector2.ZERO) -> voi
 				var noise_value = noise.get_noise_2d(float(x), float(y))
 				# Check distance from spawn
 				var distance_from_spawn = Vector2(tile_pos).length()
-				if noise_value < -0.2 and distance_from_spawn > 20:  # No puddles within 20 tiles of spawn
+				if noise_value < -0.3 and distance_from_spawn > 20:  # No puddles within 20 tiles of spawn
 					if not puddle_positions.has(tile_pos):
 						spawn_puddle(tile_pos)
 				else:
 					maybe_spawn_resource(tile_pos)
+				# Spawn enemies with low probability
+				if randf() < 0.001 and distance_from_spawn > 30:  
+					var spawn_position = $TileLayer0.map_to_local(tile_pos)
+					if not is_puddle_at_position(tile_pos):
+						spawn_enemy(spawn_position)
+
+func spawn_enemy(position: Vector2) -> void:
+	var enemy = EnemyScene.instantiate()
+	enemy.position = position
+	$EnemyLayer.add_child(enemy)
 func maybe_spawn_resource(tile_position: Vector2i) -> void:
 	if is_puddle_at_position(tile_position):
 		return  # Do not spawn resources on puddles

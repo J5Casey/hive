@@ -25,7 +25,7 @@ animations = [{
 radius = 13.3333
 height = 46.0
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["huntable"]]
 script = ExtResource("1_rwmaq")
 metadata/_edit_group_ = true
 
