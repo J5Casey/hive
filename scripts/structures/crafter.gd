@@ -94,7 +94,29 @@ var recipes = {
 			"LANDFILL": 1
 		},
 		"craft_time": 2.0
-	}
+	},
+	"WARRIOR_ANT": {
+		"inputs": {
+			"IRON_INGOT": 2,
+			"WOOD": 5
+		},
+		"outputs": {
+			"WARRIOR_ANT": 1
+		},
+		"craft_time": 3.0
+	},
+	"CRAFTER": {
+    "inputs": {
+        "IRON_INGOT": 4,
+        "STONE": 6,
+        "COGS": 2,
+        "CIRCUITS": 1
+    },
+    "outputs": {
+        "CRAFTER": 1
+    },
+    "craft_time": 4.0
+	},
 }
 
 var active_recipe = null
