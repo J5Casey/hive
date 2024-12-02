@@ -2,8 +2,8 @@ extends Line2D
 
 var start_building: Node = null
 var end_building: Node = null
-var transfer_rate = 1.0 # items per second
-var food_cost_multiplier = 0.1 / 64 # food per tile distance
+var transfer_rate = 1.0 
+var food_cost_multiplier = 0.05 / 64 
 var is_active = false
 var transfer_timer = 0.0
 var food_consumption_rate = 0.0
