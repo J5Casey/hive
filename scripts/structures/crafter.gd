@@ -106,16 +106,16 @@ var recipes = {
 		"craft_time": 3.0
 	},
 	"CRAFTER": {
-    "inputs": {
-        "IRON_INGOT": 4,
-        "STONE": 6,
-        "COGS": 2,
-        "CIRCUITS": 1
-    },
-    "outputs": {
-        "CRAFTER": 1
-    },
-    "craft_time": 4.0
+	"inputs": {
+		"IRON_INGOT": 4,
+		"STONE": 6,
+		"COGS": 2,
+		"CIRCUITS": 1
+	},
+	"outputs": {
+		"CRAFTER": 1
+	},
+	"craft_time": 4.0
 	},
 }
 

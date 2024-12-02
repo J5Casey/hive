@@ -24,14 +24,14 @@ var categories = {
 		"REFINED_STONE": 0,
 	},
 	"Machines": {
-		"FURNACE": 4,
-		"FARM": 4,
-		"HIVE": 2,
-		"DRILL": 4,
-		"STORAGE_CRATE": 4,
-		"CRAFTER": 2,
-		"LANDFILL": 8,
-		"WARRIOR_ANT": 4, 
+		"FURNACE": 8,
+		"FARM": 8,
+		"HIVE": 8,
+		"DRILL": 8,
+		"STORAGE_CRATE": 8,
+		"CRAFTER": 8,
+		"LANDFILL": 16,
+		"WARRIOR_ANT": 8, 
 	},	
 	"Tools": {
 		"TOOL": 0
