@@ -12,11 +12,14 @@ offset_bottom = 328.0
 script = ExtResource("1_j1mj5")
 
 [node name="InventoryPanel" type="Panel" parent="."]
-layout_mode = 0
-offset_left = -300.0
-offset_top = -200.0
-offset_right = 632.0
-offset_bottom = 992.0
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -308.0
+offset_right = 516.0
+offset_bottom = 564.0
+grow_vertical = 2
 
 [node name="TabContainer" type="TabContainer" parent="InventoryPanel"]
 layout_mode = 1
@@ -27,16 +30,23 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CraftingPanel" type="Panel" parent="."]
-layout_mode = 0
-offset_left = 640.0
-offset_top = -200.0
-offset_right = 1144.0
-offset_bottom = 992.0
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 528.0
+offset_top = -308.0
+offset_right = 856.0
+offset_bottom = 564.0
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CraftingPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2

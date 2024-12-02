@@ -1,8 +1,8 @@
 extends Area2D
 
 @export var building_name = "HIVE"
-@export var tile_radius = 20  # Number of tiles
-@export var base_food_consumption = 0.5  # Per second
+@export var tile_radius = 20 
+@export var base_food_consumption = 0.5  
 @export var is_ghost = false
 
 @onready var building_area = $CollisionShape2D
@@ -11,11 +11,11 @@ extends Area2D
 
 var farms_in_range = []
 var warrior_ants_in_range = []
-var influence_radius = tile_radius * 64  # Radius used to calculate the side length
+var influence_radius = tile_radius * 64  
 var is_mouse_hovering = false
 
 func _ready():
-	var side_length = influence_radius * 2  # Total side length of the square
+	var side_length = influence_radius* 2
 
 	if is_ghost:
 		# Set up the influence area shape for visualization only

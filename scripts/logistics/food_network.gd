@@ -44,4 +44,4 @@ func _process(delta):
 	if abs(net_change) > 0.001:  # Only apply changes above threshold
 		# Remove food from consumption, but don't go below 0
 		total_food = max(0, total_food + net_change)
-		print(total_food)
+		# print(total_food)

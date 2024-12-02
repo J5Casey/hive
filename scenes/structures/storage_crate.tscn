@@ -32,10 +32,17 @@ grow_horizontal = 0
 grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="CanvasLayer/StorageUI"]
-layout_mode = 0
-offset_left = -8.0
-offset_right = 1152.0
-offset_bottom = 736.0
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -896.0
+offset_top = -128.0
+offset_bottom = 368.0
+grow_horizontal = 0
+grow_vertical = 2
 
 [node name="Label" type="Label" parent="CanvasLayer/StorageUI/Panel" groups=["logistics"]]
 layout_mode = 0
@@ -49,14 +56,15 @@ text = "Storage
 [node name="StorageContainer" type="VBoxContainer" parent="CanvasLayer/StorageUI/Panel"]
 layout_mode = 0
 offset_top = 96.0
-offset_right = 1160.0
-offset_bottom = 736.0
+offset_right = 896.0
+offset_bottom = 504.0
 
 [node name="CloseButton" type="Button" parent="CanvasLayer/StorageUI/Panel"]
 layout_mode = 0
-offset_left = 1104.0
-offset_right = 1144.0
-offset_bottom = 40.0
+offset_left = 856.0
+offset_top = 8.0
+offset_right = 896.0
+offset_bottom = 48.0
 icon = ExtResource("3_b5pmm")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

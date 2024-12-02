@@ -27,7 +27,7 @@ func interact():
 		update_storage_display()
 
 func update_storage_display():
-	print("Storage crate contents: ", storage)
+	# print("Storage crate contents: ", storage)
 	for child in storage_container.get_children():
 		child.queue_free()
 		

@@ -34,10 +34,10 @@ grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="CanvasLayer/FurnaceUI"]
 layout_mode = 0
-offset_left = -1460.0
-offset_top = -528.5
+offset_left = -900.0
+offset_top = -225.0
 offset_right = 51.0
-offset_bottom = 425.5
+offset_bottom = 207.0
 
 [node name="Crafting" type="VBoxContainer" parent="CanvasLayer/FurnaceUI/Panel"]
 layout_mode = 0
@@ -73,10 +73,10 @@ layout_mode = 2
 
 [node name="CloseButton" type="Button" parent="CanvasLayer/FurnaceUI/Panel"]
 layout_mode = 0
-offset_left = 1464.0
-offset_top = 1.0
-offset_right = 1504.0
-offset_bottom = 41.0
+offset_left = 912.0
+offset_top = 1.5
+offset_right = 952.0
+offset_bottom = 41.5
 icon = ExtResource("3_sjjkv")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
