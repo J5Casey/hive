@@ -2,7 +2,7 @@ extends Area2D
 
 @export var building_name = "HIVE"
 @export var tile_radius = 20  # Number of tiles
-@export var base_food_consumption = 0.5  # Per second
+@export var base_food_consumption = 0.5  # Food consumption per second
 @export var is_ghost = false
 
 @onready var building_area = $CollisionShape2D
@@ -43,20 +43,22 @@ func _ready():
 	influence_detector.connect("area_entered", _on_influence_area_entered)
 	influence_detector.connect("area_exited", _on_influence_area_exited)
 
+	# Register the hive as a consumer with FoodNetwork
 	FoodNetwork.register_consumer(self, base_food_consumption)
 
 	# Manually check for existing farms within radius
 	call_deferred("_detect_existing_farms")
 
+# Remove or comment out the direct consumption in _process(delta)
 func _process(delta):
 	if is_ghost:
 		return  # Ghost hive doesn't need to process
 
-	# Existing code for food consumption
-	FoodNetwork.consume_food(base_food_consumption * delta)
-	
+	# Removed direct consumption to prevent double-counting
+	# FoodNetwork.consume_food(base_food_consumption * delta)
+
 func _detect_existing_farms():
-	# Use the updated method for detecting farms
+	# Detect existing farms within influence radius
 	var farms = get_tree().get_nodes_in_group("farms")
 	for farm in farms:
 		var distance = global_position.distance_to(farm.global_position)
@@ -64,13 +66,13 @@ func _detect_existing_farms():
 			if farm not in farms_in_range:
 				farms_in_range.append(farm)
 				farm.set_production_active(true)
-				
+
 func _exit_tree():
 	if self.has_meta("is_ghost") and is_ghost:
 		# Skip cleanup for the ghost hive
 		return
 	
-	# Clean up when the hive is removed
+	# Unregister from FoodNetwork when the hive is removed
 	FoodNetwork.unregister_consumer(self)
 	for farm in farms_in_range:
 		if is_instance_valid(farm):
@@ -85,7 +87,6 @@ func _on_influence_area_entered(node: Node2D):
 		farms_in_range.append(node)
 		node.set_production_active(true)
 	elif node.is_in_group("warrior"):
-		#print("Warrior ant entered hive influence area:", node.name)
 		warrior_ants_in_range.append(node)
 		node.set_production_active(true)
 		node.set_hive_data(global_position, influence_radius)
@@ -100,7 +101,6 @@ func _on_influence_area_exited(node: Node2D):
 			node.set_production_active(false)
 	elif node.is_in_group("warrior"):
 		if node in warrior_ants_in_range:
-			#print("Warrior ant exited hive influence area:", node.name)
 			warrior_ants_in_range.erase(node)
 			node.set_production_active(false)
 			node.set_hive_data(null, 0)  

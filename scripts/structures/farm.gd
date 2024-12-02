@@ -9,8 +9,6 @@ var is_producing = false
 func _ready():
 	add_to_group("farms")
 
-
-
 func set_production_active(active: bool):
 	is_within_hive_radius = active
 	if active and !is_producing:

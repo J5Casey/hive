@@ -40,9 +40,10 @@ func set_production_active(active: bool):
 	is_within_hive_radius = active
 	if active:
 		FoodNetwork.register_consumer(self, food_consumption_rate)
+		modulate = Color(1, 1, 1, 1)
 	else:
 		FoodNetwork.unregister_consumer(self)
-	modulate = Color(1, 1, 1, 1) if active else Color(1, 0.5, 0.5, 1)
+		modulate = Color(1, 0.5, 0.5, 1)
 
 func _exit_tree():
 	if is_within_hive_radius:

@@ -28,16 +28,6 @@ func recalculate_rates():
 	production_rate = producers.values().reduce(func(accum, number): return accum + number, 0)
 	consumption_rate = consumers.values().reduce(func(accum, number): return accum + number, 0)
 
-func add_food(amount: float):
-	total_food += amount
-	emit_signal("food_updated", total_food)
-
-func consume_food(amount: float) -> bool:
-	if total_food >= amount:
-		total_food -= amount
-		emit_signal("food_updated", total_food)
-		return true
-	return false
 
 func get_total_food() -> float:
 	return total_food
@@ -54,3 +44,4 @@ func _process(delta):
 	if abs(net_change) > 0.001:  # Only apply changes above threshold
 		# Remove food from consumption, but don't go below 0
 		total_food = max(0, total_food + net_change)
+		print(total_food)

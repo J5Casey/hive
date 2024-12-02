@@ -144,7 +144,7 @@ func _process(delta):
 	update_recipe_buttons()
 
 	if active_recipe and is_within_hive_radius:
-		if FoodNetwork.consume_food(food_consumption_rate * delta):
+		if FoodNetwork.get_total_food() > 0:
 			if !is_crafting and try_consume_ingredients():
 				is_crafting = true
 				crafting_progress = 0.0

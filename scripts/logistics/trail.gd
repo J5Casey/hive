@@ -6,6 +6,7 @@ var transfer_rate = 1.0 # items per second
 var food_cost_multiplier = 0.1 / 64 # food per tile distance
 var is_active = false
 var transfer_timer = 0.0
+var food_consumption_rate = 0.0
 
 @onready var start_point = $StartPoint
 @onready var end_point = $EndPoint
@@ -38,26 +39,6 @@ func _ready():
 	width = 4.0
 	default_color = Color(0.8, 0.5, 0.2, 0.8)
 
-func set_buildings(start: Node, end: Node):
-	#print("Setting buildings: ", start.name, " to ", end.name)
-	start_building = start
-	end_building = end
-	start_building.tree_exiting.connect(queue_free)
-	end_building.tree_exiting.connect(queue_free)
-	is_active = true
-	#print("Trail activated")
-	
-func _process(delta):
-	if is_active and start_building and end_building:
-		var food_cost = get_food_cost() * delta
-		#print("Attempting to consume food: ", food_cost)
-		if FoodNetwork.consume_food(food_cost):
-			#print("Food consumed, attempting transfer")
-			transfer_timer += delta
-			if transfer_timer >= 1.0 / transfer_rate:
-				attempt_transfer()
-				transfer_timer = 0.0
-				
 func attempt_transfer():
 	var source_storage = start_building.output_storage if "output_storage" in start_building else start_building.storage
 	var target_storage = end_building.input_storage if "input_storage" in end_building else end_building.storage	
@@ -71,7 +52,30 @@ func attempt_transfer():
 				start_building.update_storage_display()
 			if end_building.has_method("update_storage_display"):
 				end_building.update_storage_display()
-			break			
-func get_food_cost() -> float:
+			break	
+
+func set_buildings(start: Node, end: Node):
+	#print("Setting buildings: ", start.name, " to ", end.name)
+	start_building = start
+	end_building = end
+	start_building.tree_exiting.connect(queue_free)
+	end_building.tree_exiting.connect(queue_free)
+	is_active = true
+	#print("Trail activated")
+	
+	# Calculate the food consumption rate once
+	food_consumption_rate = get_food_consumption_rate()
+	# Register as a consumer
+	FoodNetwork.register_consumer(self, food_consumption_rate)
+	
+func _process(delta):
+	if is_active and start_building and end_building:
+		# Proceed with transfer logic
+		transfer_timer += delta
+		if transfer_timer >= 1.0 / transfer_rate:
+			attempt_transfer()
+			transfer_timer = 0.0
+
+func get_food_consumption_rate() -> float:
 	var distance = start_point.position.distance_to(end_point.position)
-	return distance * food_cost_multiplier * transfer_rate 
+	return distance * food_cost_multiplier * transfer_rate

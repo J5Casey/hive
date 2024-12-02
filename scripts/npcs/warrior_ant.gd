@@ -97,15 +97,16 @@ func _process(delta):
 		return  # No actions while outside hive radius
 
 	if is_active:
-		# Try to consume food
-		if FoodNetwork.consume_food(food_consumption_rate * delta):
-			pass  # Food successfully consumed
+		# Check if there's enough food
+		if FoodNetwork.get_total_food() >= food_consumption_rate * delta:
+			# Proceed with normal actions
+			pass
 		else:
 			# Not enough food, deactivate ant
 			deactivate()
 	else:
 		# If inactive due to lack of food, check if food is available to reactivate
-		if FoodNetwork.consume_food(food_consumption_rate * delta):
+		if FoodNetwork.get_total_food() >= food_consumption_rate * delta:
 			activate()
 
 	# Health regeneration
@@ -117,7 +118,7 @@ func activate():
 	if not is_active:
 		is_active = true
 		modulate = Color(1, 1, 1, 1)  # Normal color indicating active
-		# Re-register as consumer
+		# Register as consumer
 		FoodNetwork.register_consumer(self, food_consumption_rate)
 		# Re-enable monitoring
 		detection_area.monitoring = true
@@ -149,7 +150,7 @@ func set_production_active(active: bool):
 		deactivate()
 	else:
 		# If ant enters hive influence and food is available, attempt to activate
-		if not is_active and FoodNetwork.consume_food(0):
+		if not is_active and FoodNetwork.get_total_food() >= 0:
 			activate()
 
 func set_hive_data(position, radius):
