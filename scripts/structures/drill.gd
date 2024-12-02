@@ -2,10 +2,10 @@ extends Area2D
 
 @export var building_name = "DRILL"
 @export var food_consumption_rate = 0.2  # Food per second
-@export var output_storage = {}  # rename current 'output_storage' to 'output_output_storage'
+@export var output_storage = {}  
 
 var current_resource = null
-var collection_rate = 1.0  # Resources per second
+var collection_rate = 2.0  # Resources per second
 var is_within_hive_radius = false
 
 @onready var amount_label = Label.new()
