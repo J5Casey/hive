@@ -24,24 +24,21 @@ var categories = {
 		"REFINED_STONE": 0,
 	},
 	"Machines": {
-		"FURNACE": 8,
-		"FARM": 8,
-		"HIVE": 8,
-		"DRILL": 8,
-		"STORAGE_CRATE": 8,
-		"CRAFTER": 8,
-		"LANDFILL": 16,
-		"WARRIOR_ANT": 8, 
+		"FURNACE": 20,
+		"FARM": 20,
+		"HIVE": 20,
+		"DRILL": 20,
+		"STORAGE_CRATE": 20,
+		"CRAFTER": 20,
+		"LANDFILL": 20,
+		"WARRIOR_ANT": 20, 
 	},	
-	"Tools": {
-		"TOOL": 0
-	}
 }
 
 func _ready():
 	SignalBus.connect("resource_collected", _on_resource_collected)
 	# Toggle below comment for cheaty items for quick debugging
-	# reset_inventory()
+	reset_inventory()
 
 func add_item(category: String, item_name: String, amount: int):
 	if categories.has(category) and categories[category].has(item_name):

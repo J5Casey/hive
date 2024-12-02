@@ -16,14 +16,6 @@ var recipes = {
 		"output_category": "Machines",
 		"craft_time": 3.0
 	},
-	"TOOL": {
-		"Resources": {
-			"IRON": 2,
-			"WOOD": 1
-		},
-		"output_category": "Tools",
-		"craft_time": 1.0
-	},
 	"HIVE": {
 		"Resources": {
 			"IRON_INGOT": 5,

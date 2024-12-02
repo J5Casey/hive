@@ -25,16 +25,6 @@ var recipes = {
 		},
 		"craft_time": 3.0
 	},
-	"TOOL": {
-		"inputs": {
-			"IRON": 2,
-			"WOOD": 1
-		},
-		"outputs": {
-			"TOOL": 1
-		},
-		"craft_time": 1.0
-	},
 	"HIVE": {
 		"inputs": {
 			"IRON_INGOT": 5,
