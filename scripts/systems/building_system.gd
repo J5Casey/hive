@@ -164,14 +164,19 @@ func process_destroy_mode(delta: float) -> void:
 	
 	var result = space_state.intersect_point(query)
 	
+	var potential_building = null
 	if result.size() > 0:
-		var potential_building = result[0].collider
-		if potential_building.is_in_group("destroyable"):
-			if potential_building != hovered_building:
-				if hovered_building and is_instance_valid(hovered_building):
-					hovered_building.modulate = Color(1, 1, 1, 1)  # Reset previous building
-				destroy_timer = 0
-				hovered_building = potential_building
+		for res in result:
+			var collider = res.collider
+			if collider.is_in_group("destroyable"):
+				potential_building = collider
+				break
+	if potential_building != null:
+		if potential_building != hovered_building:
+			if hovered_building and is_instance_valid(hovered_building):
+				hovered_building.modulate = Color(1, 1, 1, 1)  # Reset previous building's color
+			destroy_timer = 0
+			hovered_building = potential_building
 	else:
 		if hovered_building and is_instance_valid(hovered_building):
 			hovered_building.modulate = Color(1, 1, 1, 1)  # Reset color
@@ -181,12 +186,12 @@ func process_destroy_mode(delta: float) -> void:
 	if hovered_building and is_instance_valid(hovered_building) and Input.is_action_pressed("destroy_building"):
 		destroy_timer += delta
 		var progress = destroy_timer / DESTROY_TIME
-		hovered_building.modulate = Color(1, 1-progress, 1-progress, 1)
+		hovered_building.modulate = Color(1, 1 - progress, 1 - progress, 1)
 		
 		if destroy_timer >= DESTROY_TIME:
 			destroy_building(hovered_building)
 			destroy_timer = 0
-
+			
 func enter_destroy_mode() -> void:
 	if is_building_mode:
 		exit_building_mode()
