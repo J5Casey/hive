@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2wo5p"]
 size = Vector2(126, 126)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_qeu0f"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6eyer"]
 
 [node name="hive" type="Area2D" groups=["destroyable", "hives"]]
 script = ExtResource("1_ayihe")
@@ -22,7 +22,7 @@ collision_layer = 3
 input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InfluenceArea"]
-shape = SubResource("CircleShape2D_qeu0f")
+shape = SubResource("RectangleShape2D_6eyer")
 
 [node name="RadiusVisual" type="ColorRect" parent="InfluenceArea"]
 anchors_preset = 8

@@ -2,7 +2,7 @@ extends Area2D
 
 @export var building_name = "HIVE"
 @export var tile_radius = 20  # Number of tiles
-@export var base_food_consumption = 0.5  # Food consumption per second
+@export var base_food_consumption = 0.5  # Per second
 @export var is_ghost = false
 
 @onready var building_area = $CollisionShape2D
@@ -11,18 +11,20 @@ extends Area2D
 
 var farms_in_range = []
 var warrior_ants_in_range = []
-var influence_radius = tile_radius * 64  
+var influence_radius = tile_radius * 64  # Radius used to calculate the side length
 var is_mouse_hovering = false
 
 func _ready():
+	var side_length = influence_radius * 2  # Total side length of the square
+
 	if is_ghost:
 		# Set up the influence area shape for visualization only
-		var circle_shape = CircleShape2D.new()
-		circle_shape.radius = influence_radius
-		influence_area.shape = circle_shape
+		var rect_shape = RectangleShape2D.new()
+		rect_shape.extents = Vector2(influence_radius, influence_radius)
+		influence_area.shape = rect_shape
 
 		# Set ColorRect size based on influence radius
-		var rect_size = Vector2(influence_radius * 2, influence_radius * 2)
+		var rect_size = Vector2(side_length, side_length)
 		$InfluenceArea/RadiusVisual.size = rect_size
 		$InfluenceArea/RadiusVisual.position = -rect_size / 2
 
@@ -31,12 +33,12 @@ func _ready():
 
 	# Regular initialization for the actual hive
 	# Set up the influence area shape
-	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = influence_radius
-	influence_area.shape = circle_shape
+	var rect_shape = RectangleShape2D.new()
+	rect_shape.extents = Vector2(influence_radius, influence_radius)
+	influence_area.shape = rect_shape
 
 	# Set ColorRect size based on influence radius
-	$InfluenceArea/RadiusVisual.size = Vector2(influence_radius * 2, influence_radius * 2)
+	$InfluenceArea/RadiusVisual.size = Vector2(side_length, side_length)
 	$InfluenceArea/RadiusVisual.position = -Vector2(influence_radius, influence_radius)
 
 	# Connect the influence area signals
@@ -49,23 +51,19 @@ func _ready():
 	# Manually check for existing farms within radius
 	call_deferred("_detect_existing_farms")
 
-# Remove or comment out the direct consumption in _process(delta)
-func _process(delta):
-	if is_ghost:
-		return  # Ghost hive doesn't need to process
-
-	# Removed direct consumption to prevent double-counting
-	# FoodNetwork.consume_food(base_food_consumption * delta)
-
 func _detect_existing_farms():
-	# Detect existing farms within influence radius
+	# Detect existing farms within square influence area
 	var farms = get_tree().get_nodes_in_group("farms")
 	for farm in farms:
-		var distance = global_position.distance_to(farm.global_position)
-		if distance <= influence_radius:
+		var delta = farm.global_position - global_position
+		if abs(delta.x) <= influence_radius and abs(delta.y) <= influence_radius:
 			if farm not in farms_in_range:
 				farms_in_range.append(farm)
 				farm.set_production_active(true)
+
+func _process(_delta):
+	if is_ghost:
+		return  # Ghost hive doesn't need to process
 
 func _exit_tree():
 	if self.has_meta("is_ghost") and is_ghost:
@@ -103,7 +101,7 @@ func _on_influence_area_exited(node: Node2D):
 		if node in warrior_ants_in_range:
 			warrior_ants_in_range.erase(node)
 			node.set_production_active(false)
-			node.set_hive_data(null, 0)  
+			node.set_hive_data(null, 0)
 
 func _on_mouse_entered():
 	is_mouse_hovering = true
