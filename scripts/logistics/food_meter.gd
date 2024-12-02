@@ -5,7 +5,7 @@ extends Control
 
 func _process(_delta):
 	food_label.text = "Food: %.1f" % FoodNetwork.total_food
-	food_label.modulate = Color.REBECCA_PURPLE
+	food_label.modulate = Color.YELLOW
 	# Not Becca, Rebecca, because she was a big girl
 	var net_rate = FoodNetwork.get_production_rate() - FoodNetwork.get_consumption_rate()
 	rate_label.text = "Rate: %+.1f/s" % net_rate
