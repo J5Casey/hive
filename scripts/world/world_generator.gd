@@ -14,7 +14,6 @@ func _ready() -> void:
 	SignalBus.player_position_changed.connect(_on_player_position_changed)
 	SignalBus.connect("request_puddle_removal", _on_request_puddle_removal)
 	
-	# Configure FastNoiseLite parameters
 	noise.seed = randi()  # Random seed for different patterns
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN  # Noise type
 	noise.frequency = 0.03  # Controls the scale; smaller values create larger features
