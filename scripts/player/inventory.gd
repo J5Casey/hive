@@ -38,7 +38,7 @@ var categories = {
 func _ready():
 	SignalBus.connect("resource_collected", _on_resource_collected)
 	# Toggle below comment for cheaty items for quick debugging
-	reset_inventory()
+	#reset_inventory()
 
 func add_item(category: String, item_name: String, amount: int):
 	if categories.has(category) and categories[category].has(item_name):
