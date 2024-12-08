@@ -1,5 +1,6 @@
 extends Node
 
+# Preloaded scenes
 var building_scenes = {
 	"FURNACE": preload("res://scenes/structures/furnace.tscn"),
 	"FARM": preload("res://scenes/structures/farm.tscn"),
@@ -11,6 +12,7 @@ var building_scenes = {
 	"WARRIOR_ANT": preload("res://scenes/npcs/warrior_ant.tscn"),  
 }
 
+# Inventory data
 var categories = {
 	"Resources": {
 		"WOOD": 0,
@@ -32,14 +34,15 @@ var categories = {
 		"CRAFTER": 20,
 		"LANDFILL": 20,
 		"WARRIOR_ANT": 20, 
-	},	
+	},    
 }
 
 func _ready():
 	SignalBus.connect("resource_collected", _on_resource_collected)
-	# Toggle below comment for cheaty items for quick debugging
+	# Toggle below to enable/disable debug inventory
 	#reset_inventory()
 
+# Public interface
 func add_item(category: String, item_name: String, amount: int):
 	if categories.has(category) and categories[category].has(item_name):
 		categories[category][item_name] += amount
@@ -49,9 +52,11 @@ func get_item_amount(category: String, item_name: String) -> int:
 		return categories[category][item_name]
 	return 0
 
+# Signal handlers
 func _on_resource_collected(resource_name, amount):
 	add_item("Resources", resource_name, amount)
 
+# Debug functions
 func reset_inventory():
 	for category in categories:
 		for item in categories[category]:

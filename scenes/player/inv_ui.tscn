@@ -19,7 +19,7 @@ anchor_bottom = 0.5
 offset_left = -280.0
 offset_top = -300.0
 offset_right = 236.0
-offset_bottom = 572.0
+offset_bottom = 916.0
 grow_vertical = 2
 metadata/_edit_group_ = true
 
@@ -39,7 +39,7 @@ anchor_bottom = 0.5
 offset_left = 240.0
 offset_top = -300.0
 offset_right = 568.0
-offset_bottom = 572.0
+offset_bottom = 916.0
 grow_vertical = 2
 metadata/_edit_group_ = true
 

@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+# Configuration
 @export var speed := 400.0
 @export var run_speed_multiplier := 2
 @export var min_zoom := 0.5
@@ -7,116 +8,142 @@ extends CharacterBody2D
 @export var zoom_speed := 5
 @export var health := 100
 
-var hovering_resource = null  
+# State tracking
+var hovering_resource = null
 var is_harvesting: bool = false
 
-func _ready() -> void:
-	$Camera2D.zoom = Vector2(max_zoom, max_zoom)
-	SignalBus.player_hovering_resource.connect(_on_player_hovering_resource)
-	SignalBus.player_stopped_hovering_resource.connect(_on_player_stopped_hovering_resource)
+# Node references
+@onready var camera = $Camera2D
+@onready var sprite = $AnimatedSprite2D
+@onready var collision = $CollisionShape2D
 
-func handle_movement(delta: float) -> void:
-	var input_vector = Vector2.ZERO
-	input_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	input_vector.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
-	
-	if input_vector != Vector2.ZERO:
-		input_vector = input_vector.normalized()
-		var current_speed = speed
-		if Input.is_action_pressed("run"):
-			current_speed *= run_speed_multiplier
-		velocity = input_vector * current_speed
-		$AnimatedSprite2D.play()
+func _ready():
+	_setup_camera()
+	_connect_signals()
 
-		# Emit the player position changed signal
-		SignalBus.player_position_changed.emit(global_position)
-		
-		# Rotate the player based on movement direction
-		var rotation_angle = velocity.angle() + PI / 2
-		rotation = rotation_angle
-	else:
-		velocity = Vector2.ZERO
-		$AnimatedSprite2D.stop()
-	
-	move_and_slide()
-
-func handle_interaction(delta: float) -> void:
-	if hovering_resource != null and hovering_resource.harvestable:
-		if Input.is_action_pressed("interact"):
-			if not is_harvesting:
-				# Start harvesting on the resource
-				hovering_resource.start_harvesting()
-				is_harvesting = true
-		else:
-			if is_harvesting:
-				# Stop harvesting on the resource
-				hovering_resource.cancel_harvesting()
-				is_harvesting = false
-	else:
-		if is_harvesting:
-			# Stop harvesting if not hovering over a resource anymore
-			if hovering_resource != null:
-				hovering_resource.cancel_harvesting()
-			is_harvesting = false
-
-func _physics_process(delta: float) -> void:
+func _physics_process(delta):
 	handle_movement(delta)
 	handle_interaction(delta)
 	handle_zoom(delta)
+
+# Setup functions
+func _setup_camera():
+	camera.zoom = Vector2(max_zoom, max_zoom)
+
+func _connect_signals():
+	SignalBus.player_hovering_resource.connect(_on_player_hovering_resource)
+	SignalBus.player_stopped_hovering_resource.connect(_on_player_stopped_hovering_resource)
+
+# Movement handlers
+func handle_movement(delta: float):
+	var input_vector = _get_input_vector()
 	
-func handle_zoom(delta: float) -> void:
-	var zoom_direction = Input.get_action_strength("zoom_in") - Input.get_action_strength("zoom_out")
-	if zoom_direction != 0:
-		var new_zoom = $Camera2D.zoom + Vector2(zoom_speed * zoom_direction * delta, zoom_speed * zoom_direction * delta)
-		new_zoom.x = clamp(new_zoom.x, min_zoom, max_zoom)
-		new_zoom.y = clamp(new_zoom.y, min_zoom, max_zoom)
-		$Camera2D.zoom = new_zoom
+	if input_vector != Vector2.ZERO:
+		_apply_movement(input_vector)
+		sprite.play()
+		SignalBus.player_position_changed.emit(global_position)
+	else:
+		velocity = Vector2.ZERO
+		sprite.stop()
+	
+	move_and_slide()
 
-func _on_player_hovering_resource(resource):
-	hovering_resource = resource  # Store the resource node
+func _get_input_vector() -> Vector2:
+	return Vector2(
+		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
+		Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+	).normalized()
 
-func _on_player_stopped_hovering_resource():
+func _apply_movement(input_vector: Vector2):
+	var current_speed = speed * (run_speed_multiplier if Input.is_action_pressed("run") else 1.0)
+	velocity = input_vector * current_speed
+	rotation = velocity.angle() + PI/2
+
+# Interaction handlers
+func handle_interaction(_delta: float):
+	if not hovering_resource:
+		_stop_harvesting()
+		return
+		
+	if not hovering_resource.harvestable:
+		_stop_harvesting()
+		return
+		
+	if Input.is_action_pressed("interact"):
+		_start_harvesting()
+	else:
+		_stop_harvesting()
+
+func _start_harvesting():
+	if not is_harvesting:
+		hovering_resource.start_harvesting()
+		is_harvesting = true
+
+func _stop_harvesting():
 	if is_harvesting:
-		if hovering_resource != null:
+		if hovering_resource:
 			hovering_resource.cancel_harvesting()
 		is_harvesting = false
-	hovering_resource = null
 
-func take_damage(amount: int) -> void:
+# Camera handlers
+func handle_zoom(delta: float):
+	var zoom_direction = Input.get_action_strength("zoom_in") - Input.get_action_strength("zoom_out")
+	if zoom_direction != 0:
+		_update_camera_zoom(zoom_direction * delta)
+
+func _update_camera_zoom(zoom_amount: float):
+	var new_zoom = camera.zoom + Vector2(zoom_speed * zoom_amount, zoom_speed * zoom_amount)
+	new_zoom.x = clamp(new_zoom.x, min_zoom, max_zoom)
+	new_zoom.y = clamp(new_zoom.y, min_zoom, max_zoom)
+	camera.zoom = new_zoom
+
+# Combat handlers
+func take_damage(amount: int):
 	health -= amount
 	SignalBus.health_changed.emit(health)
+	
 	if health <= 0:
-		# Handle player death
-		SignalBus.player_died.emit()
-		health = 100  # Reset health
-		SignalBus.health_changed.emit(health)
-		position = Vector2.ZERO  # Reset to spawn
-		Inventory.reset_inventory()  # Clear inventory
+		_handle_death()
 
-		# Temporarily remove from 'huntable' group
-		remove_from_group("huntable")
+func _handle_death():
+	SignalBus.player_died.emit()
+	_reset_player()
+	_temporarily_disable_combat()
 
-		# Re-add after a short delay
-		var readd_timer = Timer.new()
-		readd_timer.one_shot = true
-		readd_timer.wait_time = 1.0  # Adjust delay as needed
-		add_child(readd_timer)
-		readd_timer.timeout.connect(_on_readd_to_huntable)
-		readd_timer.start()
+func _reset_player():
+	health = 100
+	SignalBus.health_changed.emit(health)
+	position = Vector2.ZERO
+	Inventory.reset_inventory()
 
-		# Disable collision shapes temporarily
-		$CollisionShape2D.disabled = true
+func _temporarily_disable_combat():
+	remove_from_group("huntable")
+	collision.disabled = true
+	
+	var readd_timer = Timer.new()
+	readd_timer.one_shot = true
+	readd_timer.wait_time = 1.0
+	add_child(readd_timer)
+	readd_timer.timeout.connect(_on_readd_to_huntable)
+	readd_timer.start()
+	
+	var collision_timer = Timer.new()
+	collision_timer.one_shot = true
+	collision_timer.wait_time = 0.1
+	add_child(collision_timer)
+	collision_timer.timeout.connect(_on_reenable_collision)
+	collision_timer.start()
 
-		# Re-enable collisions after a short delay
-		var collision_timer = Timer.new()
-		collision_timer.one_shot = true
-		collision_timer.wait_time = 0.1  # Adjust delay as needed
-		add_child(collision_timer)
-		collision_timer.timeout.connect(_on_reenable_collision)
-		collision_timer.start()
+# Signal handlers
+func _on_player_hovering_resource(resource):
+	hovering_resource = resource
+
+func _on_player_stopped_hovering_resource():
+	_stop_harvesting()
+	hovering_resource = null
 
 func _on_readd_to_huntable():
 	add_to_group("huntable")
 
 func _on_reenable_collision():
-	$CollisionShape2D.disabled = false
+	collision.disabled = false

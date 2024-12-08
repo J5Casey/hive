@@ -1,15 +1,17 @@
 extends Area2D
 
+# Configuration
 enum ResourceType { WOOD, COAL, STONE, IRON, GOLD }
-
 @export var resource_type = ResourceType.WOOD
 @export var amount: int = 1
-var harvestable = false  # Indicates if the resource is within harvesting range
+@export var harvest_time: float = 2.0
 
-@export var harvest_time: float = 2.0  # Time required to harvest
+# State tracking
+var harvestable = false
 var is_harvesting: bool = false
 var harvest_progress: float = 0.0
 
+# Resource definitions
 var resource_textures = {
 	ResourceType.WOOD: preload("res://assets/sprites/resources/wood.png"),
 	ResourceType.COAL: preload("res://assets/sprites/resources/coal.png"),
@@ -34,44 +36,94 @@ var resource_names = {
 	ResourceType.GOLD: "GOLD"
 }
 
+# Node References
+@onready var base_sprite = $BaseSprite2D
+@onready var highlight_sprite = $HighlightSprite2D
+@onready var harvest_progress_bar = $HarvestUI/HarvestProgressBar
+@onready var collect_area = $CollectArea
+
 func _ready():
-	$CollectArea.connect("area_entered", _on_collect_area_entered)
-	$CollectArea.connect("area_exited", _on_collect_area_exited)
-	connect("mouse_entered", _on_hitbox_mouse_entered)
-	connect("mouse_exited", _on_hitbox_mouse_exited)
-	
-	# Set up both regular and highlight textures
-	$BaseSprite2D.texture = resource_textures[resource_type]
-	$HighlightSprite2D.texture = resource_highlight_textures[resource_type]
-	$HighlightSprite2D.visible = false
-	
-	# Configure the progress bar
-	$HarvestUI/HarvestProgressBar.visible = false
-	$HarvestUI/HarvestProgressBar.min_value = 0
-	$HarvestUI/HarvestProgressBar.max_value = harvest_time
-	$HarvestUI/HarvestProgressBar.value = 0
+	_connect_signals()
+	_setup_resource()
+	call_deferred("setup_textures")
 
 func _process(delta):
 	if is_harvesting:
-		harvest_progress += delta
-		$HarvestUI/HarvestProgressBar.value = harvest_progress
-		
-		# Get the position above the resource in world coordinates
-		var progress_pos = global_position + Vector2(0, -40)
-		
-		# Convert world position to screen coordinates
-		var screen_pos = get_viewport_transform() * progress_pos
-		
-		# Update progress bar position
-		$HarvestUI/HarvestProgressBar.position = screen_pos
-		$HarvestUI/HarvestProgressBar.size = Vector2(60, 10)
-		
-		if harvest_progress >= harvest_time:
-			is_harvesting = false
-			harvest_progress = 0.0
-			$HarvestUI/HarvestProgressBar.visible = false
-			collect_resource()
+		_handle_harvesting(delta)
 
+# Setup Functions
+func _connect_signals():
+	collect_area.connect("area_entered", _on_collect_area_entered)
+	collect_area.connect("area_exited", _on_collect_area_exited)
+	connect("mouse_entered", _on_hitbox_mouse_entered)
+	connect("mouse_exited", _on_hitbox_mouse_exited)
+
+func _setup_resource():
+	base_sprite.texture = resource_textures[resource_type]
+	highlight_sprite.texture = resource_highlight_textures[resource_type]
+	highlight_sprite.visible = false
+	
+	harvest_progress_bar.visible = false
+	harvest_progress_bar.min_value = 0
+	harvest_progress_bar.max_value = harvest_time
+	harvest_progress_bar.value = 0
+
+func setup_textures():
+	base_sprite.texture = resource_textures[resource_type]
+	highlight_sprite.texture = resource_highlight_textures[resource_type]
+	highlight_sprite.visible = false
+
+# Harvesting System
+func _handle_harvesting(delta):
+	harvest_progress += delta
+	harvest_progress_bar.value = harvest_progress
+	_update_progress_bar_position()
+	
+	if harvest_progress >= harvest_time:
+		_complete_harvesting()
+
+func _update_progress_bar_position():
+	var progress_pos = global_position + Vector2(0, -40)
+	var screen_pos = get_viewport_transform() * progress_pos
+	harvest_progress_bar.position = screen_pos
+	harvest_progress_bar.size = Vector2(60, 10)
+
+func _complete_harvesting():
+	is_harvesting = false
+	harvest_progress = 0.0
+	harvest_progress_bar.visible = false
+	collect_resource()
+
+# Resource State Management
+func start_harvesting():
+	if is_harvesting:
+		return
+	is_harvesting = true
+	harvest_progress = 0.0
+	harvest_progress_bar.value = 0
+	harvest_progress_bar.visible = true
+
+func cancel_harvesting():
+	if not is_harvesting:
+		return
+	is_harvesting = false
+	harvest_progress = 0.0
+	harvest_progress_bar.visible = false
+	harvest_progress_bar.value = 0.0
+
+func collect_resource():
+	SignalBus.emit_signal("resource_collected", resource_names[resource_type], amount)
+
+# Visual Feedback
+func highlight_resource():
+	highlight_sprite.visible = true
+	harvestable = true
+
+func unhighlight_resource():
+	highlight_sprite.visible = false
+	harvestable = false
+
+# Signal Handlers
 func _on_collect_area_entered(area):
 	if area.is_in_group("player"):
 		highlight_resource()
@@ -87,35 +139,11 @@ func _on_hitbox_mouse_entered():
 func _on_hitbox_mouse_exited():
 	SignalBus.emit_signal("player_stopped_hovering_resource")
 
-func highlight_resource():
-	$HighlightSprite2D.visible = true
-	harvestable = true  # Resource is now harvestable
-
-func unhighlight_resource():
-	$HighlightSprite2D.visible = false
-	harvestable = false  # Resource is no longer harvestable
-
-func start_harvesting():
-	if is_harvesting:
-		return
-	is_harvesting = true
-	harvest_progress = 0.0
-	$HarvestUI/HarvestProgressBar.value = 0
-	$HarvestUI/HarvestProgressBar.visible = true
-
-func cancel_harvesting():
-	if not is_harvesting:
-		return
-	is_harvesting = false
-	harvest_progress = 0.0
-	$HarvestUI/HarvestProgressBar.visible = false
-	$HarvestUI/HarvestProgressBar.value = 0.0
-
-func collect_resource():
-	SignalBus.emit_signal("resource_collected", resource_names[resource_type], amount)
-
-
+# Resource Type Management
 func set_resource_type(new_type):
 	resource_type = new_type
-	$BaseSprite2D.texture = resource_textures[resource_type]
-	$HighlightSprite2D.texture = resource_highlight_textures[resource_type]
+	# Wait until node is ready before setting textures
+	if not is_node_ready():
+		await ready
+	base_sprite.texture = resource_textures[resource_type]
+	highlight_sprite.texture = resource_highlight_textures[resource_type]

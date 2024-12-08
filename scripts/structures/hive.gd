@@ -1,58 +1,60 @@
 extends Area2D
 
+# Configuration
 @export var building_name = "HIVE"
-@export var tile_radius = 20 
-@export var base_food_consumption = 0.5  
+@export var tile_radius = 20
+@export var base_food_consumption = 0.5
 @export var is_ghost = false
 
+# State tracking
+var is_mouse_hovering = false
+var influence_radius = tile_radius * 64
+var farms_in_range = []
+var warrior_ants_in_range = []
+
+# Node references
 @onready var building_area = $CollisionShape2D
 @onready var influence_area = $InfluenceArea/CollisionShape2D
 @onready var influence_detector = $InfluenceArea
-
-var farms_in_range = []
-var warrior_ants_in_range = []
-var influence_radius = tile_radius * 64  
-var is_mouse_hovering = false
+@onready var radius_visual = $InfluenceArea/RadiusVisual
 
 func _ready():
-	var side_length = influence_radius* 2
-
 	if is_ghost:
-		# Set up the influence area shape for visualization only
-		var rect_shape = RectangleShape2D.new()
-		rect_shape.extents = Vector2(influence_radius, influence_radius)
-		influence_area.shape = rect_shape
+		_setup_ghost_hive()
+	else:
+		_setup_active_hive()
 
-		# Set ColorRect size based on influence radius
-		var rect_size = Vector2(side_length, side_length)
-		$InfluenceArea/RadiusVisual.size = rect_size
-		$InfluenceArea/RadiusVisual.position = -rect_size / 2
+# Setup functions
+func _setup_ghost_hive():
+	_setup_influence_area()
+	_setup_visual_radius()
 
-		# No need to connect signals or register with FoodNetwork
-		return
+func _setup_active_hive():
+	_setup_influence_area()
+	_setup_visual_radius()
+	_connect_signals()
+	_register_with_food_network()
+	call_deferred("_detect_existing_farms")
 
-	# Regular initialization for the actual hive
-	# Set up the influence area shape
+func _setup_influence_area():
 	var rect_shape = RectangleShape2D.new()
 	rect_shape.extents = Vector2(influence_radius, influence_radius)
 	influence_area.shape = rect_shape
 
-	# Set ColorRect size based on influence radius
-	$InfluenceArea/RadiusVisual.size = Vector2(side_length, side_length)
-	$InfluenceArea/RadiusVisual.position = -Vector2(influence_radius, influence_radius)
+func _setup_visual_radius():
+	var side_length = influence_radius * 2
+	radius_visual.size = Vector2(side_length, side_length)
+	radius_visual.position = -Vector2(influence_radius, influence_radius)
 
-	# Connect the influence area signals
+func _connect_signals():
 	influence_detector.connect("area_entered", _on_influence_area_entered)
 	influence_detector.connect("area_exited", _on_influence_area_exited)
 
-	# Register the hive as a consumer with FoodNetwork
+func _register_with_food_network():
 	FoodNetwork.register_consumer(self, base_food_consumption)
 
-	# Manually check for existing farms within radius
-	call_deferred("_detect_existing_farms")
-
+# Core functionality
 func _detect_existing_farms():
-	# Detect existing farms within square influence area
 	var farms = get_tree().get_nodes_in_group("farms")
 	for farm in farms:
 		var delta = farm.global_position - global_position
@@ -61,25 +63,10 @@ func _detect_existing_farms():
 				farms_in_range.append(farm)
 				farm.set_production_active(true)
 
-func _process(_delta):
-	if is_ghost:
-		return  # Ghost hive doesn't need to process
-
-func _exit_tree():
-	if self.has_meta("is_ghost") and is_ghost:
-		# Skip cleanup for the ghost hive
-		return
-	
-	# Unregister from FoodNetwork when the hive is removed
-	FoodNetwork.unregister_consumer(self)
-	for farm in farms_in_range:
-		if is_instance_valid(farm):
-			farm.set_production_active(false)
-	farms_in_range.clear()
-
+# Signal handlers
 func _on_influence_area_entered(node: Node2D):
 	if is_ghost:
-		return  # Skip interactions for the ghost hive
+		return
 
 	if node.is_in_group("farms"):
 		farms_in_range.append(node)
@@ -91,7 +78,7 @@ func _on_influence_area_entered(node: Node2D):
 
 func _on_influence_area_exited(node: Node2D):
 	if is_ghost:
-		return  # Skip interactions for the ghost hive
+		return
 
 	if node.is_in_group("farms"):
 		if node in farms_in_range:
@@ -105,8 +92,18 @@ func _on_influence_area_exited(node: Node2D):
 
 func _on_mouse_entered():
 	is_mouse_hovering = true
-	$InfluenceArea/RadiusVisual.color = Color(0.5, 0.5, 1.0, 0.2)
+	radius_visual.color = Color(0.5, 0.5, 1.0, 0.2)
 
 func _on_mouse_exited():
 	is_mouse_hovering = false
-	$InfluenceArea/RadiusVisual.color = Color(0.5, 0.5, 1.0, 0.0)
+	radius_visual.color = Color(0.5, 0.5, 1.0, 0.0)
+
+func _exit_tree():
+	if is_ghost:
+		return
+	
+	FoodNetwork.unregister_consumer(self)
+	for farm in farms_in_range:
+		if is_instance_valid(farm):
+			farm.set_production_active(false)
+	farms_in_range.clear()
