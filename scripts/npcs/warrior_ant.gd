@@ -2,7 +2,7 @@
 extends Area2D
 
 @export var building_name = "WARRIOR_ANT"
-@export var speed := 150.0
+@export var speed := 250.0
 @export var attack_damage := 15
 @export var attack_cooldown := 1.0
 @export var food_consumption_rate := 0.2  # Food per second
@@ -36,7 +36,7 @@ func _ready():
 		detection_area.monitoring = false
 		attack_area.monitorable = false
 		attack_area.monitoring = false
-		return  # Skip further initialization
+		return  
 
 	collision_shape.disabled = false
 	detection_area.monitorable = true
@@ -81,6 +81,14 @@ func _physics_process(delta):
 		position += velocity * delta
 	else:
 		velocity = Vector2.ZERO
+
+	if velocity != Vector2.ZERO:
+		#Start animation and turn when moving
+		$AnimatedSprite2D.play()
+		rotation = velocity.angle() + PI/2
+	else:
+		# Stop animation when not moving
+		$AnimatedSprite2D.stop()
 
 	# Handle attacking
 	if can_attack and entities_in_range.size() > 0:
@@ -141,7 +149,6 @@ func deactivate():
 		target = null
 		velocity = Vector2.ZERO
 		patrol_target = null
-		entities_in_range.clear()  # Clear entities in range
 
 func set_production_active(active: bool):
 	is_within_hive_radius = active
