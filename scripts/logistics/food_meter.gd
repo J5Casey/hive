@@ -1,5 +1,6 @@
 extends Control
 
+#food lol
 # Node references
 @onready var food_label = $VBoxContainer/FoodAmount
 @onready var rate_label = $VBoxContainer/Rate
